@@ -95,6 +95,8 @@ BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 BOWER_INSTALLED_APPS = (
     'd3#3.3.8',
     'nvd3#1.1.12-beta',
+    'normalize.css',
+    'bootstrap',
 )
 
 STATICFILES_FINDERS = (

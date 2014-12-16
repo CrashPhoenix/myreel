@@ -37,7 +37,7 @@ def index(request):
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
-        'height': '100%', 'width': '100%'
+        'height': '90%', 'width': '100%'
     }
 
     return render_to_response('multibarhorizontalchart.html', data)
