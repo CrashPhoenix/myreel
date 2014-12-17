@@ -17,6 +17,15 @@ body {
   border-bottom: 1px solid #eee;
 }
 
+
+g.nv-x.nv-axis 
+ > g.nvd3.nv-wrap.nv-axis
+  > g
+   > g.tick
+    > text {
+  display: none;
+}
+
 /*
  * Top navigation
  * Hide default border to remove 1px line.
