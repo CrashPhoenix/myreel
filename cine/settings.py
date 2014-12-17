@@ -110,3 +110,5 @@ STATICFILES_FINDERS = (
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+
+

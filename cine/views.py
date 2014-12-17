@@ -15,29 +15,37 @@ def index(request):
     ydata = []
 
     for (i, m) in enumerate(movies):
-        xdata.append(i)
+        xdata.append(i+1)
         titles.append(str(m.title))
         ydata.append(m.gross_val)
 
     extra_serie = {"tooltip": {"y_start": "$", "y_end": ""}}
 
-    chartdata = {
-        'x': titles,
-        #'name1': 'Weekend Box Office Charts',
-        'y1': ydata, 'extra1': extra_serie
-        #'y2': ydata, 'extra2': extra_serie
+    kw_extra = {
+        'show_legend': False,
+        'show_labels': False,
+        'color_category': 'category20'
     }
 
+    chartdata = {
+        'x': xdata,
+        #'name1': 'Weekend Box Office Charts',
+        #'y1': ydata, 'extra1': extra_serie,
+        #'y2': ydata, 'extra2': extra_serie
+        #'kwargs': kwargs
+    }
+    
     for i in range(0, len(xdata)):
         chartdata['name%d' % (i+1)] = titles[i]
         chartdata['y%d' % (i+1)] = [ydata[i]]
         chartdata['extra%d' % (i+1)] = extra_serie
-
+    
     charttype = "multiBarHorizontalChart"
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
-        'height': '90%', 'width': '100%'
+        'height': '80%', 'width': '110%',
+        'kw_extra': kw_extra
     }
 
     return render_to_response('multibarhorizontalchart.html', data)
