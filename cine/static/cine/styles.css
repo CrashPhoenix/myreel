@@ -34,11 +34,12 @@ core-toolbar {
   font-weight: 400;
 }
 
-.drawer-content {
+core-menu.drawer-content {
   color: #EEEEEE;
   background-color: #A10A17;
   height: 100%;
   width: 100%;
+  margin: 0;
 }
 
 .movies {
