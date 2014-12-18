@@ -3,7 +3,6 @@ from django.shortcuts import render_to_response
 
 from bom import BOM
 
-
 def index(request):
     #return HttpResponse("Hello, world. You're at cine.")
     bom = BOM()
@@ -44,7 +43,7 @@ def index(request):
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
-        'height': '80%', 'width': '110%',
+        'height': '80%', 'width': '100%',
         'kw_extra': kw_extra
     }
 

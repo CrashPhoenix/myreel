@@ -97,6 +97,8 @@ BOWER_INSTALLED_APPS = (
     'nvd3#1.1.12-beta',
     'normalize.css',
     'bootstrap',
+    'Polymer/polymer#latest',
+    'Polymer/paper-elements#latest',
 )
 
 STATICFILES_FINDERS = (
