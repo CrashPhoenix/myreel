@@ -29,16 +29,25 @@ g.nv-x.nv-axis
 
 core-toolbar {
   background-color: #A10A17;
-  color: #fff;
+  color: #EEEEEE;
   font-size: 20px;
   font-weight: 400;
 }
 
 .drawer-content {
-  color: #fff;
+  color: #EEEEEE;
   background-color: #A10A17;
   height: 100%;
   width: 100%;
+}
+
+.movies {
+  color: #757575;
+  background-color: #EEEEEE;
+}
+
+.movies > .row {
+  padding: 25px;
 }
 
 /*
