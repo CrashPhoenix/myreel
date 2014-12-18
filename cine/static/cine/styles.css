@@ -17,6 +17,7 @@ section {
 
 a, a:hover {
   text-decoration: none;
+  color: inherit;
 }
 
 g.nv-x.nv-axis
@@ -53,6 +54,7 @@ core-menu.drawer-content {
 
 .movie-entry {
   color: #EDBB30;
+  border-bottom: solid 1px #fff;
 }
 
 /*

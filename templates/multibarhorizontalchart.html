@@ -38,14 +38,15 @@
 
     <core-header-panel mode="seamed" drawer flex>
       <core-toolbar class="drawer">
-        <paper-icon-button icon="theaters"></paper-icon-button>
         <div>Cin&eacute;</div>
       </core-toolbar>
       <div class="content">
-          <core-menu class="drawer-content" selected="0" fit>
-            <core-item icon="settings" label="Settings"></core-item>
-            <core-item icon="dialog" label="Dialog"></core-item>
-            <core-item icon="search" label="Search"></core-item>
+          <core-menu class="drawer-content" selected="0">
+            <a href="/">
+              <core-item icon="theaters" label="Daily Chart"></core-item>
+            </a>
+            <core-item icon="theaters" label="Weekly Chart"></core-item>
+            <core-item icon="theaters" label="Weekend Chart"></core-item>
           </core-menu>
       </div>
     </core-header-panel>
@@ -62,8 +63,8 @@
         <div class="movies">
           
           {% for movie in movies %}
-          <div class="row">
-            <core-item class="movie-entry" label="{{movie.rank}}">
+          <div class="row movie-entry">
+            <core-item label="{{movie.rank}}">
               <core-icon icon="sort"></core-icon>
               <font class="movie-title">{{movie.title}}</font>
             </core-item>
