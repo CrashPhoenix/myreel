@@ -1,18 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 
-from bom import BOM
+from bom import BOM, DAILY_CHART, WEEKEND_CHART, WEEKLY_CHART
 
-def index(request, title='daily_chart'):
+def index(request, title=DAILY_CHART):
     #return HttpResponse(str(title))
-    bom = BOM()
+    bom = BOM(title)
 
     movies = bom.get_chart()
 
 
-    if title == 'weekend_chart':
+    if title == WEEKEND_CHART:
         _chart = 'Weekend Charts'
-    elif title == 'weekly_chart':
+    elif title == WEEKLY_CHART:
         _chart = 'Weekly Charts'
     else:
         _chart = 'Daily Charts'
@@ -58,7 +58,8 @@ def index(request, title='daily_chart'):
         'kw_extra': kw_extra,
         'movies': ranks,
         'chart': _chart,
-        'title': title
+        'title': title,
+        'date': bom.date
     }
 
     return render_to_response('weekend_chart.html', data)

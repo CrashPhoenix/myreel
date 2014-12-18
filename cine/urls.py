@@ -10,5 +10,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='index'),
-    url(r'^(?P<title>\w+_\w+$)', views.index, name='index'),
+    url(r'^(?P<title>\w+/chart$)', views.index, name='index'),
 )
