@@ -3,11 +3,16 @@ from django.shortcuts import render_to_response
 
 from bom import BOM
 
-def index(request):
-    #return HttpResponse("Hello, world. You're at cine.")
+def index(request, title='daily_chart'):
+    #return HttpResponse(str(title))
     bom = BOM()
 
-    movies = bom.weekend_chart()
+    if title == 'weekend_chart':
+        movies = bom.weekend_chart()
+        _chart = 'Weekend Charts'
+    elif title == 'daily_chart':
+        movies = bom.daily_chart()
+        _chart = 'Daily Charts'
 
     xdata = []
     titles = []
@@ -48,7 +53,8 @@ def index(request):
         'height': '80%', 'width': '100%',
         'kw_extra': kw_extra,
         'movies': ranks,
-        'title': 'Weekend Charts'
+        'chart': _chart,
+        'title': title
     }
 
     return render_to_response('weekend_chart.html', data)
