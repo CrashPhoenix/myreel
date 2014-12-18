@@ -47,7 +47,8 @@ def index(request):
         'chartdata': chartdata,
         'height': '80%', 'width': '100%',
         'kw_extra': kw_extra,
-        'movies': ranks
+        'movies': ranks,
+        'title': 'Weekend Charts'
     }
 
-    return render_to_response('multibarhorizontalchart.html', data)
+    return render_to_response('weekend_chart.html', data)

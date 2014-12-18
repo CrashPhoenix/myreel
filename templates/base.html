@@ -3,12 +3,11 @@
 <script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
 <script type="text/javascript" src='{% static 'nvd3/nv.d3.min.js' %}'></script>
 
-{% load nvd3_tags %}
 <!doctype html>
 
 <html>
 <head>
-  <title>cine-frontend</title>
+  <title>Cin&eacute;</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
@@ -54,24 +53,14 @@
     <core-header-panel main flex>
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
-        <div>Weekend Chart</div>
+        <div>{{title}}</div>
       </core-toolbar>
       <div class="content">
-        <div>
-          {% include_container "multibarhorizontalchart_container" height width %}
-        </div>
-        <div class="movies">
-          
-          {% for movie in movies %}
-          <div class="row movie-entry">
-            <core-item label="{{movie.rank}}">
-              <core-icon icon="sort"></core-icon>
-              <font class="movie-title">{{movie.title}}</font>
-            </core-item>
-          </div>
-          {% endfor %}
 
-        </div>
+        {% block content %}
+        {% endblock content %}
+
+
       </div>
     </core-header-panel>
 
