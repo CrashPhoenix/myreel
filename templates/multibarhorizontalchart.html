@@ -63,9 +63,9 @@
           
           {% for movie in movies %}
           <div class="row">
-            <core-item label="{{movie.rank}}">
+            <core-item class="movie-entry" label="{{movie.rank}}">
               <core-icon icon="sort"></core-icon>
-              {{movie.title}}
+              <font class="movie-title">{{movie.title}}</font>
             </core-item>
           </div>
           {% endfor %}

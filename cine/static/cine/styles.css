@@ -42,13 +42,17 @@ core-menu.drawer-content {
   margin: 0;
 }
 
-.movies {
+.movies, .movie-title {
   color: #757575;
   background-color: #EEEEEE;
 }
 
 .movies > .row {
   padding: 25px;
+}
+
+.movie-entry {
+  color: #EDBB30;
 }
 
 /*
