@@ -19,6 +19,14 @@ a, a:hover {
   text-decoration: none;
 }
 
+g.nv-x.nv-axis
+ > g.nvd3.nv-wrap.nv-axis
+  > g
+   > g.tick
+    > text {
+  display: none;
+}
+
 core-toolbar {
   background-color: #A10A17;
   color: #fff;
