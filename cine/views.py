@@ -7,12 +7,16 @@ def index(request, title='daily_chart'):
     #return HttpResponse(str(title))
     bom = BOM()
 
+    movies = bom.get_chart()
+
+
     if title == 'weekend_chart':
-        movies = bom.weekend_chart()
         _chart = 'Weekend Charts'
-    elif title == 'daily_chart':
-        movies = bom.daily_chart()
+    elif title == 'weekly_chart':
+        _chart = 'Weekly Charts'
+    else:
         _chart = 'Daily Charts'
+
 
     xdata = []
     titles = []
