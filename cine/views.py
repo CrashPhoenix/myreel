@@ -57,9 +57,11 @@ def index(request, title=DAILY_CHART):
         chartdata['extra%d' % (i+1)] = extra_serie
     
     charttype = "multiBarHorizontalChart"
+    chartcontainer = "multibarhorizontalchart_container"
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
         'height': '80%', 'width': '100%',
         'kw_extra': kw_extra,
         'movies': ranks,
@@ -102,7 +104,7 @@ def movie(request, movie_id):
         'charttype': charttype,
         'chartdata': chartdata,
         'chartcontainer': chartcontainer,
-        'extra': {
+        'kw_extra': {
             'x_is_date': True,
             'x_axis_format': '%d %b %Y %H',
             'tag_script_js': True,
