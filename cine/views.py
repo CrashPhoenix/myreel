@@ -62,4 +62,4 @@ def index(request, title=DAILY_CHART):
         'date': bom.date
     }
 
-    return render_to_response('weekend_chart.html', data)
+    return render_to_response('index.html', data)
