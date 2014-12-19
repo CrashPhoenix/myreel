@@ -41,11 +41,27 @@
       </core-toolbar>
       <div class="content">
           <core-menu class="drawer-content" selected="0">
-            <a href="/">
-              <core-item icon="theaters" label="Daily Chart"></core-item>
-            </a>
-            <core-item icon="theaters" label="Weekly Chart"></core-item>
-            <core-item icon="theaters" label="Weekend Chart"></core-item>
+            {% if title == 'daily/chart' %}
+              <core-item class="core-selected" icon="theaters" label="Daily Charts"></core-item>
+            {% else %}
+              <a href="/daily/chart">
+                <core-item icon="theaters" label="Daily Charts"></core-item>
+              </a>
+            {% endif %}
+            {% if title == 'weekly/chart' %}
+              <core-item class="core-selected" icon="theaters" label="Weekly Charts"></core-item>
+            {% else %}
+              <a href="/weekly/chart">
+                <core-item icon="theaters" label="Weekly Charts"></core-item>
+              </a>
+            {% endif %}
+            {% if title == 'weekend/chart' %}
+              <core-item class="core-selected" icon="theaters" label="Weekend Charts"></core-item>
+            {% else %}
+              <a href="/weekend/chart">
+                <core-item icon="theaters" label="Weekend Charts"></core-item>
+              </a>
+            {% endif %}
           </core-menu>
       </div>
     </core-header-panel>
@@ -53,7 +69,7 @@
     <core-header-panel main flex>
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
-        <div>{{title}}</div>
+        <div>{{chart}} {{date}}</div>
       </core-toolbar>
       <div class="content">
 
