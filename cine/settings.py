@@ -115,12 +115,27 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 
 # Cache
-CACHES = {
-    'default': {
+def get_cache():
+  try:
+    os.environ['MEMCACHE_SERVERS'] = os.environ['MEMCACHIER_SERVERS'].replace(',', ';')
+    os.environ['MEMCACHE_USERNAME'] = os.environ['MEMCACHIER_USERNAME']
+    os.environ['MEMCACHE_PASSWORD'] = os.environ['MEMCACHIER_PASSWORD']
+    return {
+      'default': {
+        'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+        'BINARY': True,
+        'OPTIONS': { 'tcp_nodelay': True }
+      }
+    }
+  except:
+    return {
+      'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': os.environ.get('MEMCACHIER_SERVERS', '').split(','),
+      }
     }
-}
+
+CACHES = get_cache()
 
 # Sessions
 MIDDLEWARE_CLASSES = (
