@@ -33,6 +33,8 @@ def index(request, title=DAILY_CHART):
         ranks.append({'title':m.title, 'rank':m.rank})
         mvs.append(m)
 
+        request.session[m.movie_id] = m.movie_id
+
     request.session[_chart] = mvs
 
     extra_serie = {"tooltip": {"y_start": "$", "y_end": ""}}
@@ -62,7 +64,7 @@ def index(request, title=DAILY_CHART):
         'chartdata': chartdata,
         'height': '80%', 'width': '100%',
         'kw_extra': kw_extra,
-        'movies': ranks,
+        'movies': mvs,
         'chart': _chart,
         'title': title,
         'date': bom.date

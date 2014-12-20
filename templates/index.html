@@ -11,7 +11,9 @@
   <div class="row movie-entry">
     <core-item label="{{movie.rank}}">
       <core-icon icon="sort"></core-icon>
-      <font class="movie-title">{{movie.title}}</font>
+      <font class="movie-title">
+        <a href="/movie/{{movie.movie_id}}">{{movie.title}}</a>
+    </font>
     </core-item>
   </div>
   {% endfor %}
