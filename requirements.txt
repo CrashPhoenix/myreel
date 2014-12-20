@@ -1,4 +1,4 @@
-BoxOfficeMojo
+BoxOfficeMojo==0.0.9
 django-nvd3
 django-bower
 gunicorn
