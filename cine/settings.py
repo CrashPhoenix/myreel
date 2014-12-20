@@ -114,3 +114,19 @@ STATICFILES_FINDERS = (
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 
+# Cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+# Sessions
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware'
+)
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
