@@ -118,7 +118,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': os.environ.get('MEMCACHIER_SERVERS', '').split(',') + ['127.0.0.1:11211'],
+        'LOCATION': os.environ.get('MEMCACHIER_SERVERS', '').split(','),
     }
 }
 
