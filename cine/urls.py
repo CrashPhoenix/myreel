@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='index'),
     url(r'^(?P<title>\w+/chart$)', views.index, name='index'),
+    url(r'^movie/(?P<movie_id>\w+.htm)', views.movie, name='movie'),
 )
