@@ -3,12 +3,9 @@ from django.shortcuts import render_to_response
 
 from bom import BOM, DAILY_CHART, WEEKEND_CHART, WEEKLY_CHART
 
+bom = None
 def index(request, title=DAILY_CHART):
-    #return HttpResponse(str(title))
     bom = BOM(title)
-
-    movies = bom.get_chart()
-
 
     if title == WEEKEND_CHART:
         _chart = 'Weekend Charts'
@@ -18,16 +15,25 @@ def index(request, title=DAILY_CHART):
         _chart = 'Daily Charts'
 
 
+    movies = request.session.get(_chart, False)
+
+    if not movies:
+        movies = bom.get_chart()
+
     xdata = []
     titles = []
     ydata = []
     ranks = []
+    mvs = []
 
     for (i, m) in enumerate(movies):
         xdata.append(i+1)
         titles.append(str(m.title))
         ydata.append(m.gross_val)
         ranks.append({'title':m.title, 'rank':m.rank})
+        mvs.append(m)
+
+    request.session[_chart] = mvs
 
     extra_serie = {"tooltip": {"y_start": "$", "y_end": ""}}
 
