@@ -42,15 +42,10 @@ def index(request, title=DAILY_CHART):
     kw_extra = {
         'show_legend': False,
         'show_labels': False,
-        'color_category': 'category20'
     }
 
     chartdata = {
         'x': xdata,
-        #'name1': 'Weekend Box Office Charts',
-        #'y1': ydata, 'extra1': extra_serie,
-        #'y2': ydata, 'extra2': extra_serie
-        #'kwargs': kwargs
     }
     
     for i in range(0, len(xdata)):
@@ -85,7 +80,7 @@ def movie(request, movie_id):
             if m.movie_id == movie_id:
                 movie = m
                 break
-
+                
     data = {}
     xdata = []
     ydata = []
@@ -98,7 +93,6 @@ def movie(request, movie_id):
 
     if trend_data != None:
         for p in trend_data:
-            print p
             (x, date, rank, gross) = p
             xdata.append(int(x))
             gross = gross[1:].replace(',', '')
