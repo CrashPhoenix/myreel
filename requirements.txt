@@ -1,3 +1,4 @@
 BoxOfficeMojo
 django-nvd3
 django-bower
+gunicorn
