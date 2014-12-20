@@ -3,7 +3,11 @@
 {% load nvd3_tags %}
 {% block content %}
 <div>
-  {% include_container chartcontainer height width %}
+  {% if not unavailable %}
+    {% include_container chartcontainer height width %}
+  {% else %}
+    <p>Trend not yet available, check back later!</p>
+  {% endif %}
 </div>
 <div class="movies">
   

@@ -15,8 +15,9 @@ def index(request, title=DAILY_CHART):
     else:
         _chart = 'Daily Charts'
 
+    request.session['chart'] = title
 
-    movies = request.session.get(_chart, False)
+    movies = request.session.get(title, False)
 
     if not movies:
         movies = bom.get_chart()
@@ -34,24 +35,17 @@ def index(request, title=DAILY_CHART):
         ranks.append({'title':m.title, 'rank':m.rank})
         mvs.append(m)
 
-        request.session[m.movie_id] = m.movie_id
-
-    request.session[_chart] = mvs
+    request.session[title] = mvs
 
     extra_serie = {"tooltip": {"y_start": "$", "y_end": ""}}
 
     kw_extra = {
         'show_legend': False,
         'show_labels': False,
-        'color_category': 'category20'
     }
 
     chartdata = {
         'x': xdata,
-        #'name1': 'Weekend Box Office Charts',
-        #'y1': ydata, 'extra1': extra_serie,
-        #'y2': ydata, 'extra2': extra_serie
-        #'kwargs': kwargs
     }
     
     for i in range(0, len(xdata)):
@@ -79,12 +73,30 @@ def movie(request, movie_id):
     """
     lineChart page
     """
-    start_time = int(time.mktime(datetime.datetime(2012, 6, 1).timetuple()) * 1000)
-    nb_element = 150
-    xdata = range(nb_element)
-    xdata = map(lambda x: start_time + x * 1000000000, xdata)
-    ydata = [i + random.randint(1, 10) for i in range(nb_element)]
-    ydata2 = map(lambda x: x * 2, ydata)
+    _chart = request.session.get('chart')
+    movies = request.session.get(_chart, False)
+    if movies:
+        for m in movies:
+            if m.movie_id == movie_id:
+                movie = m
+                break
+                
+    data = {}
+    xdata = []
+    ydata = []
+    trend_data = None
+
+    try:
+        trend_data = movie.get_trend(_chart)
+    except:
+        data['unavailable'] = True
+
+    if trend_data != None:
+        for p in trend_data:
+            (x, date, rank, gross) = p
+            xdata.append(int(x))
+            gross = gross[1:].replace(',', '')
+            ydata.append(int(gross))
 
     tooltip_date = "%d %b %Y %H:%M:%S %p"
     extra_serie1 = {
@@ -92,27 +104,22 @@ def movie(request, movie_id):
         "date_format": tooltip_date,
         'color': '#a4c639'
     }
-    extra_serie2 = {
-        "tooltip": {"y_start": "", "y_end": " cal"},
-        "date_format": tooltip_date,
-        'color': '#FF8aF8'
-    }
     chartdata = {'x': xdata,
-                 'name1': 'series 1', 'y1': ydata, 'extra1': extra_serie1,
-                 'name2': 'series 2', 'y2': ydata2, 'extra2': extra_serie2}
+                 'name1': movie.title, 'y1': ydata}
 
     charttype = "lineChart"
     chartcontainer = 'linechart_container'  # container name
-    data = {
+    _data = {
         'charttype': charttype,
         'chartdata': chartdata,
         'chartcontainer': chartcontainer,
+        'chart': movie.title,
         'kw_extra': {
-            'x_is_date': True,
-            'x_axis_format': '%d %b %Y %H',
+            'x_is_date': False,
             'tag_script_js': True,
-            'jquery_on_ready': False,
+            'show_labels': False,
         },
-        'height': '80%', 'width': '100%'
+        'height': '80%', 'width': '90%'
     }
+    data.update(_data)
     return render_to_response('movie.html', data)
