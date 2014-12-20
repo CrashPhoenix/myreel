@@ -4,3 +4,4 @@ django-bower
 gunicorn
 pylibmc
 django-pylibmc
+whitenoise

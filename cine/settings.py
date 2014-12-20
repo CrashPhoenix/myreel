@@ -89,6 +89,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 
 # django-bower stuff
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
@@ -131,7 +136,7 @@ def get_cache():
     return {
       'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': os.environ.get('MEMCACHIER_SERVERS', '').split(','),
+        'LOCATION': '127.0.0.1:11211'
       }
     }
 
