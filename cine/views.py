@@ -16,7 +16,7 @@ def index(request, title=DAILY_CHART):
         _chart = 'Daily Charts'
 
 
-    movies = request.session.get(_chart, False)
+    movies = request.session.get(title, False)
 
     if not movies:
         movies = bom.get_chart()
@@ -34,9 +34,7 @@ def index(request, title=DAILY_CHART):
         ranks.append({'title':m.title, 'rank':m.rank})
         mvs.append(m)
 
-        request.session[m.movie_id] = m.movie_id
-
-    request.session[_chart] = mvs
+    request.session[title] = mvs
 
     extra_serie = {"tooltip": {"y_start": "$", "y_end": ""}}
 
@@ -79,6 +77,18 @@ def movie(request, movie_id):
     """
     lineChart page
     """
+    movies = request.session.get(DAILY_CHART, False)
+    if not movies:
+        movies = request.session.get(WEEKLY_CHART, False)
+    if not movies:
+        movies = request.session.get(WEEKEND_CHART, False)
+
+    if movies:
+        for m in movies:
+            if m.movie_id == movie_id:
+                movie = m
+                break
+
     start_time = int(time.mktime(datetime.datetime(2012, 6, 1).timetuple()) * 1000)
     nb_element = 150
     xdata = range(nb_element)
@@ -107,6 +117,7 @@ def movie(request, movie_id):
         'charttype': charttype,
         'chartdata': chartdata,
         'chartcontainer': chartcontainer,
+        'chart': movie.title,
         'kw_extra': {
             'x_is_date': True,
             'x_axis_format': '%d %b %Y %H',
