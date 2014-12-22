@@ -1,1 +1,1 @@
-web: gunicorn cine.wsgi --log-file -
+web: gunicorn myreel.wsgi --log-file -

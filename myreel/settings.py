@@ -1,5 +1,5 @@
 """
-Django settings for cine project.
+Django settings for myreel project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -42,7 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'djangobower',
     'django_nvd3',
-    'cine',
+    'myreel',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,9 +55,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'cine.urls'
+ROOT_URLCONF = 'myreel.urls'
 
-WSGI_APPLICATION = 'cine.wsgi.application'
+WSGI_APPLICATION = 'myreel.wsgi.application'
 
 
 # Database
