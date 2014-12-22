@@ -5,3 +5,4 @@ include/
 .Python
 db.sqlite3
 *.pyc
+staticfiles/
