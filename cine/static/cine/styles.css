@@ -20,14 +20,6 @@ a, a:hover {
   color: inherit;
 }
 
-g.nv-x.nv-axis
- > g.nvd3.nv-wrap.nv-axis
-  > g
-   > g.tick
-    > text {
-  display: none;
-}
-
 core-toolbar {
   background-color: #A10A17;
   color: #EEEEEE;
@@ -35,7 +27,7 @@ core-toolbar {
   font-weight: 400;
 }
 
-core-menu.drawer-content {
+core-header-panel.drawer-content {
   color: #EEEEEE;
   background-color: #A10A17;
   height: 100%;

@@ -1,8 +1,4 @@
 {% load static %}
-<link media="all" href="{% static 'nvd3/src/nv.d3.css' %}" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src='{% static 'd3/d3.min.js' %}'></script>
-<script type="text/javascript" src='{% static 'nvd3/nv.d3.min.js' %}'></script>
-
 <!doctype html>
 
 <html>
@@ -27,41 +23,20 @@
   <link rel="import" href="{% static 'core-item/core-item.html' %}">
 
   <link rel="stylesheet" href="{% static 'cine/styles.css' %}">
-  {% include_chart_jscss %}
-  {% load_chart charttype chartdata chartcontainer kw_extra %}
 </head>
 
 <body fullbleed layout vertical>
 
   <core-drawer-panel>
 
-    <core-header-panel mode="seamed" drawer flex>
+    <core-header-panel class="drawer-content" mode="seamed" drawer flex>
       <core-toolbar class="drawer">
         <div>Cin&eacute;</div>
       </core-toolbar>
+
       <div class="content">
           <core-menu class="drawer-content" selected="0">
-            {% if title == 'daily/chart' %}
-              <core-item class="core-selected" icon="theaters" label="Daily Charts"></core-item>
-            {% else %}
-              <a href="/daily/chart">
-                <core-item icon="theaters" label="Daily Charts"></core-item>
-              </a>
-            {% endif %}
-            {% if title == 'weekly/chart' %}
-              <core-item class="core-selected" icon="theaters" label="Weekly Charts"></core-item>
-            {% else %}
-              <a href="/weekly/chart">
-                <core-item icon="theaters" label="Weekly Charts"></core-item>
-              </a>
-            {% endif %}
-            {% if title == 'weekend/chart' %}
-              <core-item class="core-selected" icon="theaters" label="Weekend Charts"></core-item>
-            {% else %}
-              <a href="/weekend/chart">
-                <core-item icon="theaters" label="Weekend Charts"></core-item>
-              </a>
-            {% endif %}
+            <core-item class="core-selected" icon="theaters" label="Weekend Charts"></core-item>
           </core-menu>
       </div>
     </core-header-panel>
@@ -69,7 +44,7 @@
     <core-header-panel main flex>
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
-        <div>{{chart}} {{date}}</div>
+        <div>Title</div>
       </core-toolbar>
       <div class="content">
 
