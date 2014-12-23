@@ -26,7 +26,7 @@ def register(request):
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
 
-        # If the two forms are valid...
+        # If the form is valid...
         if user_form.is_valid():
             # Save the user's form data to the database.
             user = user_form.save()
@@ -48,7 +48,7 @@ def register(request):
         # Print problems to the terminal.
         # They'll also be shown to the user.
         else:
-            print user_form.errors, profile_form.errors
+            print user_form.errors
 
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
