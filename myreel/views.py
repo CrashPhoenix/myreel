@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
 from myreel.forms import UserForm
 from django.template import RequestContext
+from myreel.models import Reel
 
 def index(request):
     return render_to_response('index.html')
@@ -35,6 +36,10 @@ def register(request):
             # Once hashed, we can update the user object.
             user.set_password(user.password)
             user.save()
+
+            user.reel_set.create(
+                name="Favorites"
+            )
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
