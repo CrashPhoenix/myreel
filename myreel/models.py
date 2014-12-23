@@ -1,6 +1,5 @@
 from django.db import models
-
-from djangotoolbox.fields import ListField
+from django.contrib.auth.models import User
 
 class Genre(models.Model):
     genre = models.CharField(max_length=256)
@@ -54,3 +53,15 @@ class Links(models.Model):
     reviews = models.CharField(max_length=256)
     similar = models.CharField(max_length=256)
 
+class Reel(models.Model):
+    name = models.CharField(max_length=256)
+    movies = models.ManyToManyField(Movie)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+
+    myreels = models.ManyToManyField(Reel)
+    #picture = models.ImageField(upload_to='profile_images', blank=True)
+
+    def __unicode__(self):
+        return self.user.username
