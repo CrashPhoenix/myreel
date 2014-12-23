@@ -54,14 +54,6 @@ class Links(models.Model):
     similar = models.CharField(max_length=256)
 
 class Reel(models.Model):
+    user = models.ForeignKey(User, null=True)
     name = models.CharField(max_length=256)
     movies = models.ManyToManyField(Movie)
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-
-    myreels = models.ManyToManyField(Reel)
-    #picture = models.ImageField(upload_to='profile_images', blank=True)
-
-    def __unicode__(self):
-        return self.user.username
