@@ -3,7 +3,7 @@
 
 <html>
 <head>
-  <title>Cin&eacute;</title>
+  <title>MyReel</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
@@ -46,10 +46,10 @@
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
         <span flex></span>
         <div>
-          {% if user %}
+          {% if user.is_authenticated %}
             {{ user.username }}
             <br />
-            (<a href="#">logout</a>)
+            (<a href="/logout">logout</a>)
           {% else %}
             <a href="/login">Login</a>/<a href="/register">Register</a>
           {% endif %}
