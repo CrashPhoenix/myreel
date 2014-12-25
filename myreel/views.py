@@ -6,12 +6,12 @@ from django.template import RequestContext
 from myreel.models import Reel
 
 def index(request):
-    return render_to_response('index.html')
+    return render_to_response('myreel/index.html')
 
 def profile(request):
     user = request.POST.get('username')
     data = { 'user': user }
-    return render_to_response('index.html', data)
+    return render_to_response('myreel/index.html', data)
 
 def register(request):
     # Like before, get the request's context.
