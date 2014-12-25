@@ -6,9 +6,16 @@ from django.contrib.auth import authenticate
 from myreel.forms import UserForm
 from django.template import RequestContext
 from myreel.models import Reel
+from rottentomatoes import RT
+import os
 
 def index(request):
     data = { 'user': request.user }
+
+    rt = RT()
+    movies = rt.movies('in_theaters')
+    data['movies'] = movies
+
     return render_to_response('myreel/index.html', data)
 
 def profile(request):
@@ -110,6 +117,7 @@ def user_login(request):
         return render_to_response('registration/login.html', {}, context)
 
     # Use the login_required() decorator to ensure only those logged in can access the view.
+
 @login_required
 def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.
