@@ -3,7 +3,7 @@
 
 <html>
 <head>
-  <title>Cin&eacute;</title>
+  <title>MyReel</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
@@ -31,7 +31,7 @@
 
     <core-header-panel class="drawer-content" mode="seamed" drawer flex>
       <core-toolbar class="drawer">
-        <div>Cin&eacute;</div>
+        <div>MyReel</div>
       </core-toolbar>
 
       <div class="content">
@@ -44,7 +44,16 @@
     <core-header-panel main flex>
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
-        <div>Title</div>
+        <span flex></span>
+        <div>
+          {% if user.is_authenticated %}
+            {{ user.username }}
+            <br />
+            (<a href="/logout">logout</a>)
+          {% else %}
+            <a href="/login">Login</a>/<a href="/register">Register</a>
+          {% endif %}
+        </div>
       </core-toolbar>
       <div class="content">
 
