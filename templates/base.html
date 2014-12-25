@@ -47,9 +47,7 @@
         <span flex></span>
         <div>
           {% if user %}
-            {{ user.username }}
-            <br />
-            <a href="#">Logout</a>
+            {{ user.username }} (<a href="#">logout</a>)
           {% else %}
             <a href="/login">Login</a>/<a href="/register">Register</a>
           {% endif %}
