@@ -11,7 +11,7 @@
 <strong>Thank you for registering!</strong>
 <a href="/">Return to the homepage.</a><br />
 {% else %}
-Rango says: <strong>register here!</strong><br />
+Register for <strong>MyReel</strong>!<br />
 
 <form id="user_form" method="post" action="/register/"
         enctype="multipart/form-data">
@@ -21,8 +21,23 @@ Rango says: <strong>register here!</strong><br />
     <!-- Display each form. The as_p method wraps each element in a paragraph
          (<p>) element. This ensures each element appears on a new line,
          making everything look neater. -->
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
+    <div>
+        {{ user_form.username.errors }}
+        {{ user_form.username.label_tag }}
+        {{ user_form.username }}
+    </div>
+
+    <div>
+        {{ user_form.password.errors }}
+        {{ user_form.password.label_tag }}
+        {{ user_form.password }}
+    </div>
+
+    <div>
+        {{ user_form.email.errors }}
+        {{ user_form.email.label_tag }}
+        {{ user_form.email }}
+    </div>
 
     <!-- Provide a button to click to submit the form. -->
     <input type="submit" name="submit" value="Register" />
