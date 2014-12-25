@@ -45,7 +45,15 @@
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
         <span flex></span>
-        <div>Title</div>
+        <div>
+          {% if user %}
+            {{ user.username }}
+            <br />
+            <a href="#">Logout</a>
+          {% else %}
+            <a href="/login">Login</a>/<a href="/register">Register</a>
+          {% endif %}
+        </div>
       </core-toolbar>
       <div class="content">
 
