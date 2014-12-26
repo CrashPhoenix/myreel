@@ -18,6 +18,12 @@ def index(request):
 
     return render_to_response('myreel/index.html', data)
 
+def movie(request, rt_id):
+    rt = RT()
+    movie = rt.info(rt_id)
+    data = { 'movie': movie }
+    return render_to_response('myreel/movie.html', data)
+
 def profile(request):
     user = request.POST.get('username')
     data = { 'user': user }
