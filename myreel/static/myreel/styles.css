@@ -15,15 +15,17 @@ section {
   margin: 20px;
 }
 
-polymer-ui-card {
+div.movie {
   width: 180px;
-  height: 267px;
+  height: 315px;
   padding: 2px;
+  margin-bottom: 0px;
+  display: inline-block;
 }
 
-img.movie {
+img.detailed {
   width: inherit;
-  height: inherit;
+  height: 267px;
   padding: inherit;
 }
 

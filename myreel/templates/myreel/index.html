@@ -5,16 +5,14 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
-    <a href="movie/{{ movie.id }}">
-        <polymer-ui-card>
-            <img class="movie" src="{{ movie.posters.detailed }}">
-            <!--<br />
-            <a href="movie/{{ movie.id }}">{{ movie.title }}</a>-->
-        </polymer-ui-card>
-    </a>
+        <div class="movie" style="text-align:center;">
+            <a href="movie/{{ movie.id }}">
+                {{ movie.title }}
+                <img class="detailed" src="{{ movie.posters.detailed }}">
+            </a>
+        </div>
     {% endfor %}
 
 </div>
-
 
 {% endblock content %}
