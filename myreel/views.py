@@ -35,9 +35,12 @@ def add_movie(request, rt_id):
 
 def profile(request):
     user = request.user
-    if user == None:
-        return HttpResponseRedirect('index.html')
+    
+    if not user.is_authenticated(): 
+        return HttpResponseRedirect('/')
+
     favorites = user.reels.get(name='Favorites')
+    
     data = { 'user': user }
     return render_to_response('myreel/profile.html', data)
 
