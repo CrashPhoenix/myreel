@@ -11,6 +11,7 @@ django-pylibmc==0.5.0
 djangotoolbox==1.6.2
 gunicorn==19.1.1
 mock==1.0.1
+psycopg2==2.5.4
 pylibmc==1.4.1
 pymongo==2.7.2
 python-nvd3==0.13.5
