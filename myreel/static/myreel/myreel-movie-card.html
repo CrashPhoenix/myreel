@@ -1,0 +1,56 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height">
+<template>
+  <style>
+    a, a:hover {
+      text-decoration: none;
+      color: inherit;
+    }
+    div.movie {
+      position: relative;
+      width: {{width}};
+      height: {{height}};
+      padding: 2px;
+      margin-bottom: 0px;
+      display: inline-block;
+    }
+    img {
+      width: inherit;
+      height: inherit;
+      padding: inherit;
+    }
+    core-icon-button {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      background-color: white;
+      opacity: 0.4;
+    }
+    core-icon-button.like {
+      bottom: 0px;
+      right: 0px;
+    }
+    core-icon-button.dislike {
+      bottom: 0px;
+      left: 0px;
+    }
+  </style>
+
+    <div class="movie" style="text-align:center;">
+      <a href="movie/{{ rtID }}">
+          <!--{{ movieTitle }}-->
+          <img src="{{ img }}">
+      </a>
+      <core-icon-button class="like" icon="favorite-outline"></core-icon-button>
+      <core-icon-button class="dislike" icon="clear"></core-icon-button>
+    </div>
+
+</template>
+<script>
+
+  Polymer('myreel-movie-card', {
+  });
+
+</script>
+</polymer-element>
