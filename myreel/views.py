@@ -13,7 +13,7 @@ def index(request):
     data = { 
         'user': request.user,
         'width': '180px',
-        'height': '315px'
+        'height': '267px'
     }
 
     rt = RT()

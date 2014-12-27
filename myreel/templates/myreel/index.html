@@ -7,8 +7,9 @@
     {% for movie in movies %}
         <myreel-movie-card
             img="{{movie.posters.detailed}}"
-            movietitle="{{movie.title}}"
-            rtid="{{movie.id}}"
+            movieTitle="{{movie.title}}"
+            description="{{movie.synopsis}}"
+            rtID="{{movie.id}}"
             width="{{width}}"
             height="{{height}}">
         </myreel-movie-card>
