@@ -3,9 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
-from myreel.forms import UserForm
+from myreel.forms import UserForm, UserProfileForm
 from django.template import RequestContext
-from myreel.models import Reel
+from myreel.models import Reel, Movie
 from rottentomatoes import RT
 import os
 
@@ -24,10 +24,22 @@ def movie(request, rt_id):
     data = { 'movie': movie }
     return render_to_response('myreel/movie.html', data)
 
+'''
+def add_movie(request, rt_id):
+    user = request.user
+    rt = RT()
+    movie = rt.info(rt_id)
+
+    Movie = 
+'''
+
 def profile(request):
-    user = request.POST.get('username')
+    user = request.user
+    if user == None:
+        return HttpResponseRedirect('index.html')
+    favorites = user.reels.get(name='Favorites')
     data = { 'user': user }
-    return render_to_response('myreel/index.html', data)
+    return render_to_response('myreel/profile.html', data)
 
 def register(request):
     # Like before, get the request's context.
@@ -42,6 +54,7 @@ def register(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
 
         # If the form is valid...
         if user_form.is_valid():
@@ -53,9 +66,17 @@ def register(request):
             user.set_password(user.password)
             user.save()
 
-            user.reel_set.create(
+            # Now sort out the UserProfile instance.
+            # Since we need to set the user attribute ourselves, we set commit=False.
+            # This delays saving the model until we're ready to avoid integrity problems.
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+            profile.reels.create(
                 name="Favorites"
             )
+            profile.save()
+
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
@@ -75,12 +96,13 @@ def register(request):
     # These forms will be blank, ready for user input.
     else:
         user_form = UserForm()
+        profile_form = UserProfileForm()
 
     # Render the template depending on the context.
     return render_to_response(
             'myreel/register.html',
-            {'user_form': user_form, 'registered': registered},
-            context)
+            {'user_form': user_form, 'profile_form': profile_form,
+            'registered': registered}, context)
 
 def user_login(request):
     # Like before, obtain the context for the user's request.

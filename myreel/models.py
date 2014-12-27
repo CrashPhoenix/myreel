@@ -57,3 +57,11 @@ class Reel(models.Model):
     user = models.ForeignKey(User, null=True)
     name = models.CharField(max_length=256)
     movies = models.ManyToManyField(Movie)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+
+    reels = models.ManyToManyField(Reel)
+
+    def __unicode(self):
+        return self.user.username

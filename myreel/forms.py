@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from myreel.models import UserProfile
 from django import forms
 
 class UserForm(forms.ModelForm):
@@ -8,3 +9,7 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'password', 'email')
 
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ()
