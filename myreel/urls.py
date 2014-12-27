@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
 
     url(r'^movie/(?P<rt_id>\d+)/$', views.movie, name='movie'),
-    url(r'^movie/add/(?P<rt_id>\d+)/$', views.add_movie, name='add_movie'),
+    url(r'^movie/add/$', views.add_movie, name='add_movie'),
     url(r'^movie/remove/(?P<rt_id>\d+)/$', views.remove_movie, name='remove_movie'),
 
     url(r'^profile/$', views.profile, name='profile'), # ADD NEW PATTERN!

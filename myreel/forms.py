@@ -13,3 +13,6 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ()
+
+class AddMovieForm(forms.Form):
+    rt_id = forms.CharField(widget=forms.HiddenInput())

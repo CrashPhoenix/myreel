@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
-from myreel.forms import UserForm, UserProfileForm
+from myreel.forms import UserForm, UserProfileForm, AddMovieForm
 from django.template import RequestContext
 from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
 from rottentomatoes import RT
@@ -19,16 +19,19 @@ def index(request):
     return render_to_response('myreel/index.html', data)
 
 def movie(request, rt_id):
+    context = RequestContext(request)
+    form = AddMovieForm()
     rt = RT()
     movie = rt.info(rt_id)
-    data = { 'movie': movie }
-    return render_to_response('myreel/movie.html', data)
+    data = { 'movie': movie, 'form': form }
+    return render_to_response('myreel/movie.html', data, context)
 
-def add_movie(request, rt_id):
+def add_movie(request):
     user = request.user
     profile = UserProfile.objects.get(user=user)
     
     rt = RT()
+    rt_id = request.POST['rt_id']
     movie = rt.info(rt_id)
 
     # if the Movie exists in our database
@@ -82,7 +85,7 @@ def add_movie(request, rt_id):
         posters_obj.movie = movie_obj
         posters_obj.save()
 
-        # one last save...just in case?
+        # one last save...just in case? ;)
         movie_obj.save()
 
     favorites = profile.reels.get(name='Favorites')
