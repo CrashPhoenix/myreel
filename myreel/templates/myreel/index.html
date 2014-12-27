@@ -8,5 +8,11 @@
         <h1>Hello, world!</h1>
     {% endif %}
 
+    <ul>
+        {% for movie in movies %}
+            <li><a href="movie/{{ movie.id }}">{{ movie.title }}</a></li>
+        {% endfor %}
+    </ul>
+
 </div>
 {% endblock content %}

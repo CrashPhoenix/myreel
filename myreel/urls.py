@@ -10,10 +10,16 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='index'),
+
+    url(r'^movie/(?P<rt_id>\d+)/$', views.movie, name='movie'),
+    url(r'^movie/add/$', views.add_movie, name='add_movie'),
+    url(r'^movie/remove/$', views.remove_movie, name='remove_movie'),
+
+    url(r'^profile/$', views.profile, name='profile'), # ADD NEW PATTERN!
     #url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
     #url(r'^accounts/profile/$', views.profile),
     #(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^register/$', views.register, name='register'), # ADD NEW PATTERN!
     url(r'^login/$', views.user_login, name='login'),
-    url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^logout/$', views.user_logout, name='logout'),    
 )

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="movie">
+
+    <form id="user_form" method="post" action="/movie/add/"
+        enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ movie.title }}
+
+        <input type="hidden" name="rt_id" value="{{ movie.id }}" />
+
+        <!-- Provide a button to click to submit the form. -->
+        <input type="submit" name="submit" value="Add to Favorites" />
+
+    </form>
+
+</div>
+{% endblock content %}

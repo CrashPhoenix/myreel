@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 class Genre(models.Model):
     genre = models.CharField(max_length=256)
 
+    def __unicode__(self):
+        return self.genre
+
 class Movie(models.Model):
     rt_id = models.PositiveIntegerField()
     title = models.CharField(max_length=256)
@@ -12,9 +15,12 @@ class Movie(models.Model):
     mpaa_rating = models.CharField(max_length=256)
     runtime = models.PositiveIntegerField()
     critics_consensus = models.CharField(max_length=256)
-    release_dates = models.CharField(max_length=256)
+    release_date = models.CharField(max_length=256)
     synopsis = models.TextField()
     studio = models.CharField(max_length=256)
+
+    def __unicode__(self):
+        return self.title
 
 class Ratings(models.Model):
     movie = models.ForeignKey(Movie)
@@ -57,3 +63,11 @@ class Reel(models.Model):
     user = models.ForeignKey(User, null=True)
     name = models.CharField(max_length=256)
     movies = models.ManyToManyField(Movie)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+
+    reels = models.ManyToManyField(Reel)
+
+    def __unicode__(self):
+        return self.user.username

@@ -3,18 +3,124 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
-from myreel.forms import UserForm
+from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
-from myreel.models import Reel
+from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
+from rottentomatoes import RT
+import os
 
 def index(request):
     data = { 'user': request.user }
+
+    rt = RT()
+    movies = rt.movies('in_theaters')
+    data['movies'] = movies
+
     return render_to_response('myreel/index.html', data)
 
+def movie(request, rt_id):
+    context = RequestContext(request)
+    rt = RT()
+    movie = rt.info(rt_id)
+    data = { 'movie': movie, 'form': MovieForm() }
+    return render_to_response('myreel/movie.html', data, context)
+
+def add_movie(request):
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
+    
+    rt = RT()
+    rt_id = request.POST['rt_id']
+    movie = rt.info(rt_id)
+
+    # if the Movie exists in our database
+    if Movie.objects.filter(rt_id=rt_id).exists():
+        movie_obj = Movie.objects.get(rt_id=rt_id)
+    else: # otherwise, build the movie and save
+        # first, build the movie
+        movie_obj = Movie(
+                        rt_id=movie['id'],
+                        title=movie['title'],
+                        year=movie['year'],
+                        mpaa_rating=movie['mpaa_rating'],
+                        runtime=movie['runtime'],
+                        release_date=movie['release_dates']['theater'],
+                        synopsis=movie['synopsis'],
+                        studio=movie['studio']
+                    )
+        movie_obj.save()
+
+        # next, build the genre object        
+        for genre in movie['genres']:
+            if Genre.objects.filter(genre=genre).exists():
+                genre_obj = Genre.objects.get(genre=genre)
+            else:
+                genre_obj = Genre(genre=genre)
+                genre_obj.save()
+            # add genres to movie's genres
+            movie_obj.genres.add(genre_obj)
+
+        # save movie
+        movie_obj.save()
+
+        # build a ratings model
+        ratings_obj = Ratings(
+                        critics_rating=movie['ratings']['critics_rating'],
+                        critics_score=movie['ratings']['critics_score'],
+                        audience_rating=movie['ratings']['audience_rating'],
+                        audience_score=movie['ratings']['audience_score']
+                    )
+        # set to this movie and save
+        ratings_obj.movie = movie_obj
+        ratings_obj.save()
+
+        # build a posters model
+        posters_obj = Posters(
+                        thumbnail=movie['posters']['thumbnail'],
+                        original=movie['posters']['original'].replace('tmp', 'org')
+                    )
+        # set to this movie and save
+        posters_obj.movie = movie_obj
+        posters_obj.save()
+
+        # one last save...just in case? ;)
+        movie_obj.save()
+
+    # update critic's concensus
+    movie_obj.critics_consensus = movie['critics_consensus']
+    movie_obj.save()
+
+
+    favorites = profile.reels.get(name='Favorites')
+    favorites.movies.add(movie_obj)
+    return HttpResponseRedirect('/profile')
+
+def remove_movie(request):
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
+    rt_id = request.POST['rt_id']
+
+    movie_obj = Movie.objects.get(rt_id=rt_id)
+    favorites = profile.reels.get(name='Favorites')
+    favorites.movies.remove(movie_obj)
+    return HttpResponseRedirect('/profile')
+
 def profile(request):
-    user = request.POST.get('username')
-    data = { 'user': user }
-    return render_to_response('myreel/index.html', data)
+    context = RequestContext(request)
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
+
+    if not user.is_authenticated(): 
+        return HttpResponseRedirect('/')
+
+    favorites = profile.reels.get(name='Favorites')
+    
+    data = {
+        'user': user,
+        'favorites': favorites.movies.all(),
+        'form': MovieForm()
+    }
+    return render_to_response('myreel/profile.html', data, context)
 
 def register(request):
     # Like before, get the request's context.
@@ -29,6 +135,7 @@ def register(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
 
         # If the form is valid...
         if user_form.is_valid():
@@ -40,9 +147,17 @@ def register(request):
             user.set_password(user.password)
             user.save()
 
-            user.reel_set.create(
+            # Now sort out the UserProfile instance.
+            # Since we need to set the user attribute ourselves, we set commit=False.
+            # This delays saving the model until we're ready to avoid integrity problems.
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+            profile.reels.create(
                 name="Favorites"
             )
+            profile.save()
+
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
@@ -62,12 +177,13 @@ def register(request):
     # These forms will be blank, ready for user input.
     else:
         user_form = UserForm()
+        profile_form = UserProfileForm()
 
     # Render the template depending on the context.
     return render_to_response(
             'myreel/register.html',
-            {'user_form': user_form, 'registered': registered},
-            context)
+            {'user_form': user_form, 'profile_form': profile_form,
+            'registered': registered}, context)
 
 def user_login(request):
     # Like before, obtain the context for the user's request.
@@ -110,6 +226,7 @@ def user_login(request):
         return render_to_response('registration/login.html', {}, context)
 
     # Use the login_required() decorator to ensure only those logged in can access the view.
+
 @login_required
 def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.

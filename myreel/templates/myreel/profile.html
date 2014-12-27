@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="movies">
+    {% if user.is_authenticated %}
+        <h1> Hello, {{ user.username }}! </h1>
+    {% else %}
+        <h1>Hello, world!</h1>
+    {% endif %}
+
+    <ul>
+        {% for movie in favorites %}
+            <li>
+                <a href="/movie/{{ movie.rt_id }}">{{ movie.title }}</a>
+                <br />
+
+                <form id="user_form" method="post" action="/movie/remove/"
+                    enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+                    <input type="hidden" name="rt_id" value="{{ movie.rt_id }}" />
+
+                    <!-- Provide a button to click to submit the form. -->
+                    <input type="submit" name="submit" value="Remove from Favorites" />
+
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock content %}
