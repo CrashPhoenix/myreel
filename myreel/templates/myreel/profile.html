@@ -10,7 +10,11 @@
 
     <ul>
         {% for movie in favorites %}
-            <li><a href="movie/{{ movie.id }}">{{ movie.title }}</a></li>
+            <li>
+                <a href="/movie/{{ movie.rt_id }}">{{ movie.title }}</a>
+                <br />
+                [<a href="/movie/remove/{{ movie.rt_id }}">Remove</a>]
+            </li>
         {% endfor %}
     </ul>
 

@@ -72,6 +72,15 @@ def add_movie(request, rt_id):
     favorites.movies.add(movie_obj)
     return HttpResponseRedirect('/profile')
 
+def remove_movie(request, rt_id):
+    user = request.user
+    profile = UserProfile.objects.get(user=user)
+
+    movie_obj = Movie.objects.get(rt_id=rt_id)
+    favorites = profile.reels.get(name='Favorites')
+    favorites.movies.remove(movie_obj)
+    return HttpResponseRedirect('/profile')
+
 def profile(request):
     user = request.user
     profile = UserProfile.objects.get(user=user)
