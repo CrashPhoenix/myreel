@@ -10,7 +10,11 @@ from rottentomatoes import RT
 import os
 
 def index(request):
-    data = { 'user': request.user }
+    data = { 
+        'user': request.user,
+        'width': '180px',
+        'height': '315px'
+    }
 
     rt = RT()
     movies = rt.movies('in_theaters')

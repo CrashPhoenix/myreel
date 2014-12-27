@@ -5,14 +5,14 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
-        <div class="movie" style="text-align:center;">
-            <a href="movie/{{ movie.id }}">
-                {{ movie.title }}
-                <img class="detailed" src="{{ movie.posters.detailed }}">
-            </a>
-        </div>
+        <myreel-movie
+            img="{{movie.posters.detailed}}"
+            movietitle="{{movie.title}}"
+            rtid="{{movie.id}}"
+            width="{{width}}"
+            height="{{height}}">
+        </myreel-movie>
     {% endfor %}
-
 </div>
 
 {% endblock content %}
