@@ -31,18 +31,21 @@ def add_movie(request, rt_id):
     rt = RT()
     movie = rt.info(rt_id)
 
-    movie_obj = Movie(
-                    rt_id=movie['id'],
-                    title=movie['title'],
-                    year=movie['year'],
-                    mpaa_rating=movie['mpaa_rating'],
-                    runtime=movie['runtime'],
-                    critics_consensus=movie['critics_consensus'],
-                    release_date=movie['release_dates']['theater'],
-                    synopsis=movie['synopsis'],
-                    studio=movie['studio']
-                )
-    movie_obj.save()
+    if Movie.objects.filter(rt_id=rt_id).exists():
+        movie_obj = Movie.objects.get(rt_id=rt_id)
+    else:
+        movie_obj = Movie(
+                        rt_id=movie['id'],
+                        title=movie['title'],
+                        year=movie['year'],
+                        mpaa_rating=movie['mpaa_rating'],
+                        runtime=movie['runtime'],
+                        critics_consensus=movie['critics_consensus'],
+                        release_date=movie['release_dates']['theater'],
+                        synopsis=movie['synopsis'],
+                        studio=movie['studio']
+                    )
+        movie_obj.save()
 
     for genre in movie['genres']:
         genre_obj = Genre(genre=genre)
