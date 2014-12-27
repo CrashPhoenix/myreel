@@ -6,9 +6,11 @@
 
     {% for movie in movies %}
     <a href="movie/{{ movie.id }}">
-        <img class="movie" src="{{ movie.posters.detailed }}">
-        <!--<br />
-        <a href="movie/{{ movie.id }}">{{ movie.title }}</a>-->
+        <polymer-ui-card class="movie" style="word-wrap: normal;">
+            <img src="{{ movie.posters.detailed }}">
+            <!--<br />
+            <a href="movie/{{ movie.id }}">{{ movie.title }}</a>-->
+        </polymer-ui-card>
     </a>
     {% endfor %}
 

@@ -19,7 +19,7 @@ div.movies {
   padding-left: 20px;
 }
 
-img.movie {
+polymer-ui-card {
   width: 180px;
   height: 267px;
   padding: 2px;
