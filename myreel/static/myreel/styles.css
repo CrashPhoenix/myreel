@@ -15,17 +15,18 @@ section {
   margin: 20px;
 }
 
-.movie {
+div.movies {
+  padding-left: 20px;
+}
+
+img.movie {
   width: 180px;
   height: 267px;
+  padding: 2px;
 }
 
 div.main.content {
   padding: 25px;
-}
-
-div#container {
-  text-align: center;
 }
 
 .username {

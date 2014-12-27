@@ -34,28 +34,46 @@
 
 <body fullbleed layout vertical>
 
-  <core-header-panel flex>
-    <core-toolbar>
-      <a href="/"><div>MyReel</div></a>
-      <span flex></span>
-      <div class="username">
-        {% if user.is_authenticated %}
-          <a href="/profile">{{ user.username }}</a>
-          <br />
-          (<a href="/logout">logout</a>)
-        {% else %}
-          <a href="/login">Login</a>/<a href="/register">Register</a>
-        {% endif %}
+  <core-drawer-panel>
+
+    <core-header-panel class="drawer-content" mode="seamed" drawer flex>
+      <core-toolbar class="drawer">
+        <a href="/"><div>MyReel</div></a>
+      </core-toolbar>
+
+      <div class="content">
+          <core-menu class="drawer-content" selected="0">
+            <a href="/profile">
+              <core-item class="core-selected" icon="theaters" label="MyReel"></core-item>
+            </a>
+          </core-menu>
       </div>
-    </core-toolbar>
-    <div class="main content">
+    </core-header-panel>
 
-      {% block content %}
-      {% endblock content %}
+    <core-header-panel main flex>
+      <core-toolbar>
+        <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
+        <span flex></span>
+        <div class="username">
+          {% if user.is_authenticated %}
+            {{ user.username }}
+            <br />
+            (<a href="/logout">logout</a>)
+          {% else %}
+            <a href="/login">Login</a>/<a href="/register">Register</a>
+          {% endif %}
+        </div>
+      </core-toolbar>
+      <div class="content">
+
+        {% block content %}
+        {% endblock content %}
 
 
-    </div>
-  </core-header-panel>
+      </div>
+    </core-header-panel>
+
+  </core-drawer-panel>
 
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 </body>
