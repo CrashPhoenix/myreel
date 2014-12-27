@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
-from myreel.forms import UserForm, UserProfileForm, AddMovieForm
+from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
 from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
 from rottentomatoes import RT
@@ -20,10 +20,9 @@ def index(request):
 
 def movie(request, rt_id):
     context = RequestContext(request)
-    form = AddMovieForm()
     rt = RT()
     movie = rt.info(rt_id)
-    data = { 'movie': movie, 'form': form }
+    data = { 'movie': movie, 'form': MovieForm() }
     return render_to_response('myreel/movie.html', data, context)
 
 def add_movie(request):
@@ -92,9 +91,10 @@ def add_movie(request):
     favorites.movies.add(movie_obj)
     return HttpResponseRedirect('/profile')
 
-def remove_movie(request, rt_id):
+def remove_movie(request):
     user = request.user
     profile = UserProfile.objects.get(user=user)
+    rt_id = request.POST['rt_id']
 
     movie_obj = Movie.objects.get(rt_id=rt_id)
     favorites = profile.reels.get(name='Favorites')
@@ -102,6 +102,7 @@ def remove_movie(request, rt_id):
     return HttpResponseRedirect('/profile')
 
 def profile(request):
+    context = RequestContext(request)
     user = request.user
     profile = UserProfile.objects.get(user=user)
 
@@ -112,9 +113,10 @@ def profile(request):
     
     data = {
         'user': user,
-        'favorites': favorites.movies.all()
+        'favorites': favorites.movies.all(),
+        'form': MovieForm()
     }
-    return render_to_response('myreel/profile.html', data)
+    return render_to_response('myreel/profile.html', data, context)
 
 def register(request):
     # Like before, get the request's context.
