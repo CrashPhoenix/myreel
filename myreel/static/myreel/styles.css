@@ -16,13 +16,18 @@ section {
 }
 
 div.movies {
-  padding-left: 20px;
+  padding-left: 10px;
 }
 
 polymer-ui-card {
   width: 180px;
   height: 267px;
   padding: 2px;
+}
+
+img.movie {
+  width: inherit;
+  height: inherit;
 }
 
 div.main.content {
