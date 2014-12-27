@@ -32,6 +32,8 @@ class Ratings(models.Model):
 class Posters(models.Model):
     movie = models.ForeignKey(Movie)
     thumbnail = models.CharField(max_length=256)
+    profile = models.CharField(max_length=256)
+    detailed = models.CharField(max_length=256)
     original = models.CharField(max_length=256)
 
 class Actor(models.Model):

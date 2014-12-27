@@ -77,7 +77,9 @@ def add_movie(request):
         # build a posters model
         posters_obj = Posters(
                         thumbnail=movie['posters']['thumbnail'],
-                        original=movie['posters']['original'].replace('tmp', 'org')
+                        profile=movie['posters']['original'].replace('tmb', 'pro')
+                        detailed=movie['posters']['original'].replace('tmb', 'det')
+                        original=movie['posters']['original'].replace('tmb', 'org')
                     )
         # set to this movie and save
         posters_obj.movie = movie_obj
