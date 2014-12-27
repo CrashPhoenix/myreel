@@ -8,11 +8,18 @@
         <h1>Hello, world!</h1>
     {% endif %}
 
-    <ul>
+    <div id="container">
         {% for movie in movies %}
-            <li><a href="movie/{{ movie.id }}">{{ movie.title }}</a></li>
+        <a href="movie/{{ movie.id }}">
+            <polymer-ui-card class="movie" style="word-wrap: normal;">
+                <img src="{{ movie.posters.detailed }}">
+                <!--<br />
+                <a href="movie/{{ movie.id }}">{{ movie.title }}</a>-->
+            </polymer-ui-card>
+        </a>
         {% endfor %}
-    </ul>
+    </div>
 
 </div>
+
 {% endblock content %}

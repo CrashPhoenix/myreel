@@ -103,6 +103,8 @@ BOWER_INSTALLED_APPS = (
     'bootstrap',
     'Polymer/polymer#latest',
     'Polymer/paper-elements#latest',
+    'PolymerLabs/polymer-ui-card#latest',
+    'normalize.css',
 )
 
 STATICFILES_FINDERS = (

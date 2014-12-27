@@ -9,7 +9,12 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
+  <link rel="import" href="{% static 'normalize.css/normalize.css' %}">
+
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
   <script src="{% static 'webcomponentsjs/webcomponents.js' %}"></script>
+
+  <link rel="import" href="{% static 'polymer/polymer.html' %}">
 
   <link rel="import" href="{% static 'core-icons/core-icons.html' %}">
   <link rel="import" href="{% static 'core-toolbar/core-toolbar.html' %}">
@@ -21,53 +26,37 @@
   <link rel="import" href="{% static 'core-icon-button/core-icon-button.html' %}">
   <link rel="import" href="{% static 'core-menu/core-menu.html' %}">
   <link rel="import" href="{% static 'core-item/core-item.html' %}">
+  <link rel="import" href="{% static 'polymer-ui-card/polymer-ui-card.html' %}">
 
-  <link rel="stylesheet" href="{% static 'cine/styles.css' %}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'myreel/styles.css' %}">
 </head>
 
 <body fullbleed layout vertical>
 
-  <core-drawer-panel>
-
-    <core-header-panel class="drawer-content" mode="seamed" drawer flex>
-      <core-toolbar class="drawer">
-        <a href="/"><div>MyReel</div></a>
-      </core-toolbar>
-
-      <div class="content">
-          <core-menu class="drawer-content" selected="0">
-            <a href="/profile">
-              <core-item class="core-selected" icon="theaters" label="MyReel"></core-item>
-            </a>
-          </core-menu>
+  <core-header-panel flex>
+    <core-toolbar>
+      <a href="/"><div>MyReel</div></a>
+      <span flex></span>
+      <div class="username">
+        {% if user.is_authenticated %}
+          <a href="/profile">{{ user.username }}</a>
+          <br />
+          (<a href="/logout">logout</a>)
+        {% else %}
+          <a href="/login">Login</a>/<a href="/register">Register</a>
+        {% endif %}
       </div>
-    </core-header-panel>
+    </core-toolbar>
+    <div class="main content">
 
-    <core-header-panel main flex>
-      <core-toolbar>
-        <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
-        <span flex></span>
-        <div>
-          {% if user.is_authenticated %}
-            {{ user.username }}
-            <br />
-            (<a href="/logout">logout</a>)
-          {% else %}
-            <a href="/login">Login</a>/<a href="/register">Register</a>
-          {% endif %}
-        </div>
-      </core-toolbar>
-      <div class="content">
-
-        {% block content %}
-        {% endblock content %}
+      {% block content %}
+      {% endblock content %}
 
 
-      </div>
-    </core-header-panel>
+    </div>
+  </core-header-panel>
 
-  </core-drawer-panel>
-
-
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

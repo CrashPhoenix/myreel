@@ -16,12 +16,16 @@ def index(request):
     movies = rt.movies('in_theaters')
     data['movies'] = movies
 
+    for movie in movies:
+        movie = _fix_poster_links(movie)
+
     return render_to_response('myreel/index.html', data)
 
 def movie(request, rt_id):
     context = RequestContext(request)
     rt = RT()
     movie = rt.info(rt_id)
+    movie = _fix_poster_links(movie)
     data = { 'movie': movie, 'form': MovieForm() }
     return render_to_response('myreel/movie.html', data, context)
 
@@ -77,8 +81,8 @@ def add_movie(request):
         # build a posters model
         posters_obj = Posters(
                         thumbnail=movie['posters']['thumbnail'],
-                        profile=movie['posters']['original'].replace('tmb', 'pro')
-                        detailed=movie['posters']['original'].replace('tmb', 'det')
+                        profile=movie['posters']['original'].replace('tmb', 'pro'),
+                        detailed=movie['posters']['original'].replace('tmb', 'det'),
                         original=movie['posters']['original'].replace('tmb', 'org')
                     )
         # set to this movie and save
@@ -236,3 +240,10 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
+
+def _fix_poster_links(movie):
+    thumbnail = movie['posters']['thumbnail']
+    movie['posters']['profile'] = thumbnail.replace('tmb', 'pro')
+    movie['posters']['original'] = thumbnail.replace('tmb', 'org')
+    movie['posters']['detailed'] = thumbnail.replace('tmb', 'det')
+    return movie

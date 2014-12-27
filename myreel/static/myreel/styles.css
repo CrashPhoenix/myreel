@@ -15,6 +15,23 @@ section {
   margin: 20px;
 }
 
+.movie {
+  width: 180px;
+  height: 267px;
+}
+
+div.main.content {
+  padding: 25px;
+}
+
+div#container {
+  text-align: center;
+}
+
+.username {
+  font-size: 0.75em;
+}
+
 a, a:hover {
   text-decoration: none;
   color: inherit;
@@ -48,35 +65,3 @@ core-header-panel.drawer-content {
   color: #EDBB30;
   border-bottom: solid 1px #fff;
 }
-
-/*
-paper-button {
-  margin: 0.5em 1em 0.5em 0;
-  width: 10em;
-}
-
-paper-button[right] {
-  position: fixed;
-  right: 0;
-}
-
-paper-checkbox {
-  margin-left: 1em;
-}
-
-paper-fab {
-  position: absolute !important;
-  top: 35px;
-  right: 1em;
-  z-index: 1;
-}
-
-paper-tabs {
-  background-color: #5677fc;
-  color: #fff;
-}
-
-paper-tabs[noink][nobar] paper-tab.core-selected {
-  color: #ffff8d;
-}
-*/
