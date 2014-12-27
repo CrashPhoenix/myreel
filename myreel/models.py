@@ -12,7 +12,7 @@ class Movie(models.Model):
     mpaa_rating = models.CharField(max_length=256)
     runtime = models.PositiveIntegerField()
     critics_consensus = models.CharField(max_length=256)
-    release_dates = models.CharField(max_length=256)
+    release_date = models.CharField(max_length=256)
     synopsis = models.TextField()
     studio = models.CharField(max_length=256)
 

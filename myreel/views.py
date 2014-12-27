@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
 from myreel.forms import UserForm, UserProfileForm
 from django.template import RequestContext
-from myreel.models import Reel, Movie
+from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
 from rottentomatoes import RT
 import os
 
@@ -24,24 +24,67 @@ def movie(request, rt_id):
     data = { 'movie': movie }
     return render_to_response('myreel/movie.html', data)
 
-'''
 def add_movie(request, rt_id):
     user = request.user
+    profile = UserProfile.objects.get(user=user)
+    
     rt = RT()
     movie = rt.info(rt_id)
 
-    Movie = 
-'''
+    movie_obj = Movie(
+                    rt_id=movie['id'],
+                    title=movie['title'],
+                    year=movie['year'],
+                    mpaa_rating=movie['mpaa_rating'],
+                    runtime=movie['runtime'],
+                    critics_consensus=movie['critics_consensus'],
+                    release_date=movie['release_dates']['theater'],
+                    synopsis=movie['synopsis'],
+                    studio=movie['studio']
+                )
+    movie_obj.save()
+
+    for genre in movie['genres']:
+        genre_obj = Genre(genre=genre)
+        genre_obj.save()
+        movie_obj.genres.add(genre_obj)
+    movie_obj.save()
+
+    ratings_obj = Ratings(
+                    critics_rating=movie['ratings']['critics_rating'],
+                    critics_score=movie['ratings']['critics_score'],
+                    audience_rating=movie['ratings']['audience_rating'],
+                    audience_score=movie['ratings']['audience_score']
+                )
+    ratings_obj.movie = movie_obj
+    ratings_obj.save()
+
+    posters_obj = Posters(
+                    thumbnail=movie['posters']['thumbnail'],
+                    original=movie['posters']['original'].replace('tmp', 'org')
+                )
+    posters_obj.movie = movie_obj
+    posters_obj.save()
+
+    movie_obj.save()
+
+    favorites = profile.reels.get(name='Favorites')
+    favorites.movies.add(movie_obj)
+    return HttpResponseRedirect('/profile')
 
 def profile(request):
     user = request.user
-    
+    profile = UserProfile.objects.get(user=user)
+
     if not user.is_authenticated(): 
         return HttpResponseRedirect('/')
 
-    favorites = user.reels.get(name='Favorites')
+    favorites = profile.reels.get(name='Favorites')
     
-    data = { 'user': user }
+    data = {
+        'user': user,
+        'favorites': favorites.movies.all()
+    }
     return render_to_response('myreel/profile.html', data)
 
 def register(request):
