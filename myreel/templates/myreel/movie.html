@@ -3,7 +3,7 @@
 {% block content %}
 
 <h2>{{ movie.title }}</h2>
-<div class="movie">
+<div>
 
     <div style="height:480px;">
         <img style="max-height:100%;max-width:100%;" src="{{ movie.posters.original }}" />
@@ -22,4 +22,10 @@
     </form>
 
 </div>
+<!--<myreel-movie
+    img="{{movie.posters.original}}"
+    movietitle="{{movie.title}}"
+    width="{{width}}"
+    height="{{height}}">
+</myreel-movie>-->
 {% endblock content %}

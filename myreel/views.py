@@ -30,7 +30,10 @@ def movie(request, rt_id):
     rt = RT()
     movie = rt.info(rt_id)
     movie = _fix_poster_links(movie)
-    data = { 'movie': movie, 'form': MovieForm() }
+    data = {
+        'movie': movie,
+        'form': MovieForm(),
+    }
     return render_to_response('myreel/movie.html', data, context)
 
 def add_movie(request):

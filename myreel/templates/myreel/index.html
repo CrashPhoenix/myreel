@@ -5,13 +5,13 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
-        <myreel-movie
+        <myreel-movie-card
             img="{{movie.posters.detailed}}"
             movietitle="{{movie.title}}"
             rtid="{{movie.id}}"
             width="{{width}}"
             height="{{height}}">
-        </myreel-movie>
+        </myreel-movie-card>
     {% endfor %}
 </div>
 
