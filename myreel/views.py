@@ -44,7 +44,6 @@ def add_movie(request):
                         year=movie['year'],
                         mpaa_rating=movie['mpaa_rating'],
                         runtime=movie['runtime'],
-                        critics_consensus=movie['critics_consensus'],
                         release_date=movie['release_dates']['theater'],
                         synopsis=movie['synopsis'],
                         studio=movie['studio']
@@ -86,6 +85,11 @@ def add_movie(request):
 
         # one last save...just in case? ;)
         movie_obj.save()
+
+    # update critic's concensus
+    movie_obj.critics_consensus = movie['critics_consensus']
+    movie_obj.save()
+
 
     favorites = profile.reels.get(name='Favorites')
     favorites.movies.add(movie_obj)
