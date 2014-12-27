@@ -31,9 +31,11 @@ def add_movie(request, rt_id):
     rt = RT()
     movie = rt.info(rt_id)
 
+    # if the Movie exists in our database
     if Movie.objects.filter(rt_id=rt_id).exists():
         movie_obj = Movie.objects.get(rt_id=rt_id)
-    else:
+    else: # otherwise, build the movie and save
+        # first, build the movie
         movie_obj = Movie(
                         rt_id=movie['id'],
                         title=movie['title'],
@@ -47,29 +49,41 @@ def add_movie(request, rt_id):
                     )
         movie_obj.save()
 
-    for genre in movie['genres']:
-        genre_obj = Genre(genre=genre)
-        genre_obj.save()
-        movie_obj.genres.add(genre_obj)
-    movie_obj.save()
+        # next, build the genre object        
+        for genre in movie['genres']:
+            if Genre.objects.filter(genre=genre).exists():
+                genre_obj = Genre.objects.get(genre=genre)
+            else:
+                genre_obj = Genre(genre=genre)
+                genre_obj.save()
+            # add genres to movie's genres
+            movie_obj.genres.add(genre_obj)
 
-    ratings_obj = Ratings(
-                    critics_rating=movie['ratings']['critics_rating'],
-                    critics_score=movie['ratings']['critics_score'],
-                    audience_rating=movie['ratings']['audience_rating'],
-                    audience_score=movie['ratings']['audience_score']
-                )
-    ratings_obj.movie = movie_obj
-    ratings_obj.save()
+        # save movie
+        movie_obj.save()
 
-    posters_obj = Posters(
-                    thumbnail=movie['posters']['thumbnail'],
-                    original=movie['posters']['original'].replace('tmp', 'org')
-                )
-    posters_obj.movie = movie_obj
-    posters_obj.save()
+        # build a ratings model
+        ratings_obj = Ratings(
+                        critics_rating=movie['ratings']['critics_rating'],
+                        critics_score=movie['ratings']['critics_score'],
+                        audience_rating=movie['ratings']['audience_rating'],
+                        audience_score=movie['ratings']['audience_score']
+                    )
+        # set to this movie and save
+        ratings_obj.movie = movie_obj
+        ratings_obj.save()
 
-    movie_obj.save()
+        # build a posters model
+        posters_obj = Posters(
+                        thumbnail=movie['posters']['thumbnail'],
+                        original=movie['posters']['original'].replace('tmp', 'org')
+                    )
+        # set to this movie and save
+        posters_obj.movie = movie_obj
+        posters_obj.save()
+
+        # one last save...just in case?
+        movie_obj.save()
 
     favorites = profile.reels.get(name='Favorites')
     favorites.movies.add(movie_obj)
