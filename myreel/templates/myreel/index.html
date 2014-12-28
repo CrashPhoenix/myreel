@@ -8,10 +8,12 @@
         <myreel-movie-card
             img="{{movie.posters.detailed}}"
             movieTitle="{{movie.title}}"
-            description="{{movie.synopsis}}"
             rtID="{{movie.id}}"
             width="{{width}}"
-            height="{{height}}">
+            height="{{height}}"
+            {% if movie.liked %}
+                liked
+            {% endif %}>
         </myreel-movie-card>
     {% endfor %}
 </div>

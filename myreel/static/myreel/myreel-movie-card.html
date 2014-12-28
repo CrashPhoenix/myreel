@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
-<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height">
+<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height liked">
 <template>
   <style>
     a, a:hover {
@@ -25,13 +25,13 @@
       height: 50px;
       position: absolute;
       background-color: white;
-      opacity: 0.4;
+      opacity: 0.5;
     }
-    core-icon-button.like {
+    core-icon-button#like {
       bottom: 0px;
       right: 0px;
     }
-    core-icon-button.dislike {
+    core-icon-button#dislike {
       bottom: 0px;
       left: 0px;
     }
@@ -42,14 +42,21 @@
           <!--{{ movieTitle }}-->
           <img src="{{ img }}">
       </a>
-      <core-icon-button class="like" icon="favorite-outline"></core-icon-button>
-      <core-icon-button class="dislike" icon="clear"></core-icon-button>
+      <core-icon-button id="like" icon="favorite-outline"></core-icon-button>
     </div>
 
 </template>
 <script>
 
   Polymer('myreel-movie-card', {
+    liked: false,
+    ready: function() {
+      if (this.liked) {
+        this.$.like.style.color = '#A10A17';
+        this.$.like.style.opacity = '0.8';
+        this.$.like.icon = 'favorite';
+      }
+    }
   });
 
 </script>
