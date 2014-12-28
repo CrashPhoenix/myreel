@@ -37,14 +37,26 @@
     }
   </style>
 
-    <div class="movie" style="text-align:center;">
-      <a href="movie/{{ rtID }}">
-          <!--{{ movieTitle }}-->
-          <img src="{{ img }}">
-      </a>
-      <core-icon-button id="like" icon="favorite-outline"></core-icon-button>
-    </div>
+  <div class="movie" style="text-align:center;">
+    <a href="movie/{{ rtID }}">
+        <!--{{ movieTitle }}-->
+        <img src="{{ img }}">
+    </a>
+    <core-icon-button id="like" icon="favorite-outline" on-tap="{{favoriteButtonAction}}"></core-icon-button>
+  </div>
 
+  <core-ajax
+    id="add"
+    url="/movie/add/"
+    method="POST"
+    params="{ 'rt_id': {{ rtID }} }">
+  </core-ajax>
+  <core-ajax
+    id="remove"
+    url="/movie/remove/"
+    method="POST"
+    params="{ 'rt_id': {{ rtID }} }">
+  </core-ajax>
 </template>
 <script>
 
@@ -52,6 +64,21 @@
     favorite: false,
     ready: function() {
       if (this.favorite) {
+        this.$.like.style.color = '#A10A17';
+        this.$.like.style.opacity = '0.8';
+        this.$.like.icon = 'favorite';
+      }
+    },
+    favoriteButtonAction: function() {
+      if (this.favorite) {
+        this.$.remove.go();
+        this.favorite = false;
+        this.$.like.style.color = '#333';
+        this.$.like.style.opacity = '0.5';
+        this.$.like.icon = 'favorite-outline';
+      } else {
+        this.$.add.go();
+        this.favorite = true;
         this.$.like.style.color = '#A10A17';
         this.$.like.style.opacity = '0.8';
         this.$.like.icon = 'favorite';

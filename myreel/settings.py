@@ -102,6 +102,7 @@ BOWER_INSTALLED_APPS = (
     'normalize.css',
     'bootstrap',
     'Polymer/polymer#latest',
+    'Polymer/core-ajax#latest',
     'Polymer/paper-elements#latest',
     'PolymerLabs/polymer-ui-card#latest',
     'normalize.css',
