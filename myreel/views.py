@@ -25,9 +25,9 @@ def index(request):
     for movie in movies:
         movie = _fix_poster_links(movie)
         if favorites.movies.filter(rt_id=movie['id']).exists():
-            movie['liked'] = True
+            movie['favorite'] = True
         else:
-            movie['liked'] = False
+            movie['favorite'] = False
 
 
     return render_to_response('myreel/index.html', data)

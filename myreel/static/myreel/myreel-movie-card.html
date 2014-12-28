@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
-<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height liked">
+<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height favorite">
 <template>
   <style>
     a, a:hover {
@@ -49,9 +49,9 @@
 <script>
 
   Polymer('myreel-movie-card', {
-    liked: false,
+    favorite: false,
     ready: function() {
-      if (this.liked) {
+      if (this.favorite) {
         this.$.like.style.color = '#A10A17';
         this.$.like.style.opacity = '0.8';
         this.$.like.icon = 'favorite';
