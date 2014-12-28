@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
 <polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height favorite">
 <template>
   <style>
@@ -37,6 +38,11 @@
     }
   </style>
 
+  <core-ajax
+    id="ajax"
+    method="POST">
+  </core-ajax>
+
   <div class="movie" style="text-align:center;">
     <a href="movie/{{ rtID }}">
         <!--{{ movieTitle }}-->
@@ -44,23 +50,12 @@
     </a>
     <core-icon-button id="like" icon="favorite-outline" on-tap="{{favoriteButtonAction}}"></core-icon-button>
   </div>
-
-  <core-ajax
-    id="add"
-    url="/movie/add/"
-    method="POST"
-    params="{ 'rt_id': {{ rtID }} }">
-  </core-ajax>
-  <core-ajax
-    id="remove"
-    url="/movie/remove/"
-    method="POST"
-    params="{ 'rt_id': {{ rtID }} }">
-  </core-ajax>
+ 
 </template>
 <script>
 
   Polymer('myreel-movie-card', {
+    rtID: 0,
     favorite: false,
     ready: function() {
       if (this.favorite) {
@@ -70,14 +65,21 @@
       }
     },
     favoriteButtonAction: function() {
+      params = {
+        'rt_id': this.rtID,
+        'ajax': true
+      }
+      this.$.ajax.params = params;
       if (this.favorite) {
-        this.$.remove.go();
+        this.$.ajax.url = "/movie/remove/";
+        this.$.ajax.go();
         this.favorite = false;
         this.$.like.style.color = '#333';
         this.$.like.style.opacity = '0.5';
         this.$.like.icon = 'favorite-outline';
       } else {
-        this.$.add.go();
+        this.$.ajax.url = "/movie/add/";
+        this.$.ajax.go();
         this.favorite = true;
         this.$.like.style.color = '#A10A17';
         this.$.like.style.opacity = '0.8';

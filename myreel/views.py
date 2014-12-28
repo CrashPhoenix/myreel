@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
 from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
@@ -10,13 +11,13 @@ from rottentomatoes import RT
 import os
 
 def index(request):
+    user = request.user
     data = { 
-        'user': request.user,
+        'user': user,
         'width': '180px',
         'height': '267px'
     }
-    profile = UserProfile.objects.get(user=request.user)
-    favorites = profile.reels.get(name='Favorites')
+    
 
     rt = RT()
     movies = rt.movies('in_theaters')
@@ -24,10 +25,14 @@ def index(request):
 
     for movie in movies:
         movie = _fix_poster_links(movie)
-        if favorites.movies.filter(rt_id=movie['id']).exists():
-            movie['favorite'] = True
-        else:
-            movie['favorite'] = False
+
+        if isinstance(user, User):
+            profile = UserProfile.objects.get(user=request.user)
+            favorites = profile.reels.get(name='Favorites')
+            if favorites.movies.filter(rt_id=movie['id']).exists():
+                movie['favorite'] = True
+            else:
+                movie['favorite'] = False
 
 
     return render_to_response('myreel/index.html', data)
@@ -110,9 +115,12 @@ def add_movie(request):
     movie_obj.critics_consensus = movie['critics_consensus']
     movie_obj.save()
 
-
     favorites = profile.reels.get(name='Favorites')
-    favorites.movies.add(movie_obj)
+    if not favorites.movies.filter(rt_id=rt_id).exists():
+        favorites.movies.add(movie_obj)
+
+    if request.POST['ajax']:
+        return
     return HttpResponseRedirect('/profile')
 
 def remove_movie(request):
