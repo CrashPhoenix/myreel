@@ -15,11 +15,13 @@ def index(request):
     user = request.user
     data = { 
         'user': user,
+        'showButton': True,
         'width': '180px',
         'height': '267px'
     }
+    if not user.is_authenticated():
+        data['showButton'] = False
     
-
     rt = RT()
     movies = rt.movies('in_theaters')
     data['movies'] = movies
@@ -27,14 +29,13 @@ def index(request):
     for movie in movies:
         movie = _fix_poster_links(movie)
 
-        if isinstance(user, User):
+        if user.is_authenticated():
             profile = UserProfile.objects.get(user=request.user)
             favorites = profile.reels.get(name='Favorites')
             if favorites.movies.filter(rt_id=movie['id']).exists():
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
-
 
     return render_to_response('myreel/index.html', data, context)
 
@@ -51,105 +52,111 @@ def movie(request, rt_id):
 
 def add_movie(request):
     user = request.user
-    profile = UserProfile.objects.get(user=user)
-    
-    rt = RT()
-    rt_id = request.POST['rt_id']
-    movie = rt.info(rt_id)
+    if user.is_authenticated():
+        profile = UserProfile.objects.get(user=user)
+        
+        rt = RT()
+        rt_id = request.POST['rt_id']
+        movie = rt.info(rt_id)
 
-    # if the Movie exists in our database
-    if Movie.objects.filter(rt_id=rt_id).exists():
-        movie_obj = Movie.objects.get(rt_id=rt_id)
-    else: # otherwise, build the movie and save
-        # first, build the movie
-        movie_obj = Movie(
-                        rt_id=movie['id'],
-                        title=movie['title'],
-                        year=movie['year'],
-                        mpaa_rating=movie['mpaa_rating'],
-                        runtime=movie['runtime'],
-                        release_date=movie['release_dates']['theater'],
-                        synopsis=movie['synopsis'],
-                        studio=movie['studio']
-                    )
+        # if the Movie exists in our database
+        if Movie.objects.filter(rt_id=rt_id).exists():
+            movie_obj = Movie.objects.get(rt_id=rt_id)
+        else: # otherwise, build the movie and save
+            # first, build the movie
+            movie_obj = Movie(
+                            rt_id=movie['id'],
+                            title=movie['title'],
+                            year=movie['year'],
+                            mpaa_rating=movie['mpaa_rating'],
+                            runtime=movie['runtime'],
+                            release_date=movie['release_dates']['theater'],
+                            synopsis=movie['synopsis'],
+                            studio=movie['studio']
+                        )
+            movie_obj.save()
+
+            # next, build the genre object        
+            for genre in movie['genres']:
+                if Genre.objects.filter(genre=genre).exists():
+                    genre_obj = Genre.objects.get(genre=genre)
+                else:
+                    genre_obj = Genre(genre=genre)
+                    genre_obj.save()
+                # add genres to movie's genres
+                movie_obj.genres.add(genre_obj)
+
+            # save movie
+            movie_obj.save()
+
+            # build a ratings model
+            ratings_obj = Ratings(
+                            critics_rating=movie['ratings']['critics_rating'],
+                            critics_score=movie['ratings']['critics_score'],
+                            audience_rating=movie['ratings']['audience_rating'],
+                            audience_score=movie['ratings']['audience_score']
+                        )
+            # set to this movie and save
+            ratings_obj.movie = movie_obj
+            ratings_obj.save()
+
+            # build a posters model
+            posters_obj = Posters(
+                            thumbnail=movie['posters']['thumbnail'],
+                            profile=movie['posters']['original'].replace('tmb', 'pro'),
+                            detailed=movie['posters']['original'].replace('tmb', 'det'),
+                            original=movie['posters']['original'].replace('tmb', 'org')
+                        )
+            # set to this movie and save
+            posters_obj.movie = movie_obj
+            posters_obj.save()
+
+            # one last save...just in case? ;)
+            movie_obj.save()
+
+        # update critic's concensus
+        movie_obj.critics_consensus = movie['critics_consensus']
         movie_obj.save()
 
-        # next, build the genre object        
-        for genre in movie['genres']:
-            if Genre.objects.filter(genre=genre).exists():
-                genre_obj = Genre.objects.get(genre=genre)
-            else:
-                genre_obj = Genre(genre=genre)
-                genre_obj.save()
-            # add genres to movie's genres
-            movie_obj.genres.add(genre_obj)
+        favorites = profile.reels.get(name='Favorites')
+        if not favorites.movies.filter(rt_id=rt_id).exists():
+            favorites.movies.add(movie_obj)
 
-        # save movie
-        movie_obj.save()
-
-        # build a ratings model
-        ratings_obj = Ratings(
-                        critics_rating=movie['ratings']['critics_rating'],
-                        critics_score=movie['ratings']['critics_score'],
-                        audience_rating=movie['ratings']['audience_rating'],
-                        audience_score=movie['ratings']['audience_score']
-                    )
-        # set to this movie and save
-        ratings_obj.movie = movie_obj
-        ratings_obj.save()
-
-        # build a posters model
-        posters_obj = Posters(
-                        thumbnail=movie['posters']['thumbnail'],
-                        profile=movie['posters']['original'].replace('tmb', 'pro'),
-                        detailed=movie['posters']['original'].replace('tmb', 'det'),
-                        original=movie['posters']['original'].replace('tmb', 'org')
-                    )
-        # set to this movie and save
-        posters_obj.movie = movie_obj
-        posters_obj.save()
-
-        # one last save...just in case? ;)
-        movie_obj.save()
-
-    # update critic's concensus
-    movie_obj.critics_consensus = movie['critics_consensus']
-    movie_obj.save()
-
-    favorites = profile.reels.get(name='Favorites')
-    if not favorites.movies.filter(rt_id=rt_id).exists():
-        favorites.movies.add(movie_obj)
-
-    if request.POST['ajax']:
-        return
-    return HttpResponseRedirect('/profile')
+        if request.POST['ajax']:
+            return
+        return HttpResponseRedirect('/profile')
+    return HttpResponseRedirect('/')
 
 def remove_movie(request):
     user = request.user
-    profile = UserProfile.objects.get(user=user)
-    rt_id = request.POST['rt_id']
+    if user.is_authenticated():
+        profile = UserProfile.objects.get(user=user)
+        rt_id = request.POST['rt_id']
 
-    movie_obj = Movie.objects.get(rt_id=rt_id)
-    favorites = profile.reels.get(name='Favorites')
-    favorites.movies.remove(movie_obj)
-    return HttpResponseRedirect('/profile')
+        movie_obj = Movie.objects.get(rt_id=rt_id)
+        favorites = profile.reels.get(name='Favorites')
+        favorites.movies.remove(movie_obj)
+        return HttpResponseRedirect('/profile')
+    return HttpResponseRedirect('/')
 
 def profile(request):
-    context = RequestContext(request)
     user = request.user
-    profile = UserProfile.objects.get(user=user)
+    if user.is_authenticated():
+        context = RequestContext(request)
+        profile = UserProfile.objects.get(user=user)
 
-    if not user.is_authenticated(): 
-        return HttpResponseRedirect('/')
+        if not user.is_authenticated(): 
+            return HttpResponseRedirect('/')
 
-    favorites = profile.reels.get(name='Favorites')
-    
-    data = {
-        'user': user,
-        'favorites': favorites.movies.all(),
-        'form': MovieForm()
-    }
-    return render_to_response('myreel/profile.html', data, context)
+        favorites = profile.reels.get(name='Favorites')
+        
+        data = {
+            'user': user,
+            'favorites': favorites.movies.all(),
+            'form': MovieForm()
+        }
+        return render_to_response('myreel/profile.html', data, context)
+    return HttpResponseRedirect('/')
 
 def register(request):
     # Like before, get the request's context.
