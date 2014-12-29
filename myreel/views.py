@@ -13,6 +13,13 @@ import os
 def index(request):
     context = RequestContext(request)
     user = request.user
+    profile = user.profile
+
+
+    if not profile.reels.filter(name='Favorites').exists():
+        _create_user_profile_reel(request, "Favorites")
+    favorites = profile.reels.get(name='Favorites')
+
     data = { 
         'user': user,
         'showButton': True,
@@ -29,16 +36,12 @@ def index(request):
     for movie in movies:
         movie = _fix_poster_links(movie)
 
-        '''
         if user.is_authenticated():
-            profile = UserProfile.objects.get(user=request.user)
-            favorites = profile.reels.get(name='Favorites')
             if favorites.movies.filter(rt_id=movie['id']).exists():
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
-        '''
-        
+
     return render_to_response('myreel/index.html', data, context)
 
 def movie(request, rt_id):
@@ -145,20 +148,19 @@ def profile(request):
     user = request.user
     if user.is_authenticated():
         context = RequestContext(request)
-        profile = UserProfile.objects.get(user=user)
+        profile = user.profile
 
-        if not user.is_authenticated(): 
-            return HttpResponseRedirect('/')
+    else: 
+        return HttpResponseRedirect('/')
 
-        favorites = profile.reels.get(name='Favorites')
-        
-        data = {
-            'user': user,
-            'favorites': favorites.movies.all(),
-            'form': MovieForm()
-        }
-        return render_to_response('myreel/profile.html', data, context)
-    return HttpResponseRedirect('/')
+    favorites = profile.reels.get(name='Favorites')
+    
+    data = {
+        'user': user,
+        'favorites': favorites.movies.all(),
+        'form': MovieForm()
+    }
+    return render_to_response('myreel/profile.html', data, context)
 
 def register(request):
     # Like before, get the request's context.
@@ -279,3 +281,13 @@ def _fix_poster_links(movie):
     movie['posters']['original'] = thumbnail.replace('tmb', 'org')
     movie['posters']['detailed'] = thumbnail.replace('tmb', 'det')
     return movie
+
+def _create_user_profile_reel(request, name):
+    user = request.user
+    profile = user.profile
+
+    profile.reels.create(
+        name=name
+    )
+    profile.save()
+    return
