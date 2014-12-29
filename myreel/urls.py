@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     url(r'^movie/add/$', views.add_movie, name='add_movie'),
     url(r'^movie/remove/$', views.remove_movie, name='remove_movie'),
 
+    # django-allauth
+    url(r'^accounts/', include('allauth.urls')),
+
     url(r'^profile/$', views.profile, name='profile'), # ADD NEW PATTERN!
     #url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
     #url(r'^accounts/profile/$', views.profile),

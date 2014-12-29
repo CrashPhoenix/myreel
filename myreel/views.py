@@ -29,6 +29,7 @@ def index(request):
     for movie in movies:
         movie = _fix_poster_links(movie)
 
+        '''
         if user.is_authenticated():
             profile = UserProfile.objects.get(user=request.user)
             favorites = profile.reels.get(name='Favorites')
@@ -36,7 +37,8 @@ def index(request):
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
-
+        '''
+        
     return render_to_response('myreel/index.html', data, context)
 
 def movie(request, rt_id):
