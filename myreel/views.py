@@ -13,12 +13,6 @@ import os
 def index(request):
     context = RequestContext(request)
     user = request.user
-    profile = user.profile
-
-
-    if not profile.reels.filter(name='Favorites').exists():
-        _create_user_profile_reel(request, "Favorites")
-    favorites = profile.reels.get(name='Favorites')
 
     data = { 
         'user': user,
@@ -26,8 +20,20 @@ def index(request):
         'width': '180px',
         'height': '267px'
     }
-    if not user.is_authenticated():
+
+    if user.is_authenticated():
+        profile = user.profile
+
+        if not profile.reels.filter(name='Favorites').exists():
+            _create_user_profile_reel(request, "Favorites")
+        if not profile.reels.filter(name='Watch List').exists():
+            _create_user_profile_reel(request, "Watch List")
+
+        favorites = profile.reels.get(name='Favorites')
+        watchlist = profile.reels.get(name='Watch List')
+    else:
         data['showButton'] = False
+        
     
     rt = RT()
     movies = rt.movies('in_theaters')
