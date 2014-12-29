@@ -1,0 +1,113 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height showButton favorite">
+<template>
+  <style>
+    a, a:hover {
+      text-decoration: none;
+      color: inherit;
+    }
+    div.movie {
+      position: relative;
+      width: {{width}};
+      height: {{height}};
+      padding: 2px;
+      margin-bottom: 0px;
+      display: inline-block;
+    }
+    img {
+      width: inherit;
+      height: inherit;
+      padding: inherit;
+    }
+    core-icon-button {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      background-color: white;
+      opacity: 0.5;
+    }
+    core-icon-button#like {
+      bottom: 0px;
+      right: 0px;
+    }
+    core-icon-button#dislike {
+      bottom: 0px;
+      left: 0px;
+    }
+  </style>
+
+  <core-ajax
+    id="ajax"
+    method="POST">
+  </core-ajax>
+
+  <div class="movie" style="text-align:center;">
+    <a href="movie/{{ rtID }}">
+        <!--{{ movieTitle }}-->
+        <img src="{{ img }}">
+    </a>
+    <core-icon-button id="like" icon="favorite-outline" on-tap="{{favoriteButtonAction}}"></core-icon-button>
+  </div>
+ 
+</template>
+<script>
+
+  Polymer('myreel-movie-card', {
+    rtID: 0,
+    showButton: false,
+    favorite: false,
+    ready: function() {
+      if (!this.showButton) {
+        this.$.like.style.display = 'none';
+      } else if (this.favorite) {
+        this.$.like.style.color = '#A10A17';
+        this.$.like.style.opacity = '0.8';
+        this.$.like.icon = 'favorite';
+      }
+    },
+    favoriteButtonAction: function() {
+      var csrftoken = this.getCookie('csrftoken');//$.cookie('csrftoken');
+      this.$.ajax.headers = {
+        'X-CSRFToken': csrftoken
+      };
+      this.$.ajax.params = {
+        'rt_id': this.rtID,
+        'ajax': true
+      };
+      if (this.favorite) {
+        this.$.ajax.url = "/movie/remove/";
+        this.$.ajax.go();
+        this.favorite = false;
+        this.$.like.style.color = '#333';
+        this.$.like.style.opacity = '0.5';
+        this.$.like.icon = 'favorite-outline';
+      } else {
+        this.$.ajax.url = "/movie/add/";
+        this.$.ajax.go();
+        this.favorite = true;
+        this.$.like.style.color = '#A10A17';
+        this.$.like.style.opacity = '0.8';
+        this.$.like.icon = 'favorite';
+      }
+    },
+    getCookie: function (name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+  });
+
+</script>
+</polymer-element>

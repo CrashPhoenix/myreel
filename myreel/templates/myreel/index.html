@@ -4,15 +4,22 @@
 <div class="movies">
     <h1> In Theaters </h1>
 
+    {% csrf_token %}
     {% for movie in movies %}
-        <div class="movie" style="text-align:center;">
-            <a href="movie/{{ movie.id }}">
-                {{ movie.title }}
-                <img class="detailed" src="{{ movie.posters.detailed }}">
-            </a>
-        </div>
+        <myreel-movie-card
+            img="{{movie.posters.detailed}}"
+            movieTitle="{{movie.title}}"
+            rtID="{{movie.id}}"
+            width="{{width}}"
+            height="{{height}}"
+            {% if showButton %}
+                showButton
+                {% if movie.favorite %}
+                    favorite
+                {% endif %}
+            {% endif %}>
+        </myreel-movie-card>
     {% endfor %}
-
 </div>
 
 {% endblock content %}
