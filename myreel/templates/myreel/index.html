@@ -14,8 +14,9 @@
             height="{{height}}"
             {% if showButton %}
                 showButton
-            {% elif movie.favorite %}
-                favorite
+                {% if movie.favorite %}
+                    favorite
+                {% endif %}
             {% endif %}>
         </myreel-movie-card>
     {% endfor %}
