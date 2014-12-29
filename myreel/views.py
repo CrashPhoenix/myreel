@@ -11,6 +11,7 @@ from rottentomatoes import RT
 import os
 
 def index(request):
+    context = RequestContext(request)
     user = request.user
     data = { 
         'user': user,
@@ -35,7 +36,7 @@ def index(request):
                 movie['favorite'] = False
 
 
-    return render_to_response('myreel/index.html', data)
+    return render_to_response('myreel/index.html', data, context)
 
 def movie(request, rt_id):
     context = RequestContext(request)

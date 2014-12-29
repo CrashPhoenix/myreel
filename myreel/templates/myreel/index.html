@@ -4,6 +4,7 @@
 <div class="movies">
     <h1> In Theaters </h1>
 
+    {% csrf_token %}
     {% for movie in movies %}
         <myreel-movie-card
             img="{{movie.posters.detailed}}"

@@ -52,6 +52,7 @@
   </div>
  
 </template>
+<script src="jquery.cookie.js"></script>
 <script>
 
   Polymer('myreel-movie-card', {
@@ -65,11 +66,14 @@
       }
     },
     favoriteButtonAction: function() {
-      params = {
+      var csrftoken = this.getCookie('csrftoken');//$.cookie('csrftoken');
+      this.$.ajax.headers = {
+        'X-CSRFToken': csrftoken
+      };
+      this.$.ajax.params = {
         'rt_id': this.rtID,
         'ajax': true
-      }
-      this.$.ajax.params = params;
+      };
       if (this.favorite) {
         this.$.ajax.url = "/movie/remove/";
         this.$.ajax.go();
@@ -85,6 +89,21 @@
         this.$.like.style.opacity = '0.8';
         this.$.like.icon = 'favorite';
       }
+    },
+    getCookie: function (name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
     }
   });
 
