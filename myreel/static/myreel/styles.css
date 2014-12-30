@@ -77,14 +77,19 @@ core-header-panel.drawer-content {
   border-right: 1px solid #fff;
 }
 .login-button {
-  width: 255px;
+  width: 225px;
   color: #fff;
   position: relative;
   padding: 5px;
+  text-align: left;
+  margin: 2.5px;
 }
 .fb.login-button {
   background-color: #425E9C;
 }
 .twitter.login-button {
   background-color: #55ACEE;
+}
+.google-plus.login-button {
+  background-color: #DB4C2E;
 }
