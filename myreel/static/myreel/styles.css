@@ -43,7 +43,7 @@ a, a:hover {
 }
 
 core-toolbar {
-  background-color: #A10A17;
+  background-color: #AF2F3B; /*#A10A17;*/
   color: #EEEEEE;
   font-size: 20px;
   font-weight: 400;
@@ -51,7 +51,7 @@ core-toolbar {
 
 core-header-panel.drawer-content {
   color: #EEEEEE;
-  background-color: #A10A17;
+  background-color: #AF2F3B; /*#A10A17;*/
   height: 100%;
   width: 100%;
   margin: 0;
@@ -69,4 +69,22 @@ core-header-panel.drawer-content {
 .movie-entry {
   color: #EDBB30;
   border-bottom: solid 1px #fff;
+}
+
+.fa {
+  width: 30px;
+  margin: 3px 15px 3px 3px;
+  border-right: 1px solid #fff;
+}
+.login-button {
+  width: 255px;
+  color: #fff;
+  position: relative;
+  padding: 5px;
+}
+.fb.login-button {
+  background-color: #425E9C;
+}
+.twitter.login-button {
+  background-color: #55ACEE;
 }
