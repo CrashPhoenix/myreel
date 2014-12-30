@@ -48,9 +48,9 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.twitter',
     'allauth.socialaccount.providers.google',
+    "sendgrid",
     'myreel',
 )
-ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -181,4 +181,12 @@ SOCIALACCOUNT_PROVIDERS = {
         'METHOD': 'oauth2'  # instead of 'js_sdk'
     }
 }
+ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
 SITE_ID = 1
+
+# sendgrid
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SENDGRID_EMAIL_HOST = "smtp.sendgrid.net"
+SENDGRID_EMAIL_PORT = 587
+SENDGRID_EMAIL_USERNAME = os.environ.get('SENDGRID_EMAIL_USERNAME', None)
+SENDGRID_EMAIL_PASSWORD = os.environ.get('SENDGRID_EMAIL_PASSWORD', None)
