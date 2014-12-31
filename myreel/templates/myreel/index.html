@@ -17,6 +17,9 @@
                 {% if movie.favorite %}
                     favorite
                 {% endif %}
+                {% if movie.watchlist %}
+                    watchlist
+                {% endif %}
             {% endif %}>
         </myreel-movie-card>
     {% endfor %}
