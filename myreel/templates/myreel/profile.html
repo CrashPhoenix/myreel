@@ -20,9 +20,32 @@
                     {% csrf_token %}
 
                     <input type="hidden" name="rt_id" value="{{ movie.rt_id }}" />
+                    <input type="hidden" name="reel" value="Favorites" />
 
                     <!-- Provide a button to click to submit the form. -->
                     <input type="submit" name="submit" value="Remove from Favorites" />
+
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <ul>
+        {% for movie in watchlist %}
+            <li>
+                <a href="/movie/{{ movie.rt_id }}">{{ movie.title }}</a>
+                <br />
+
+                <form id="user_form" method="post" action="/movie/remove/"
+                    enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+                    <input type="hidden" name="rt_id" value="{{ movie.rt_id }}" />
+                    <input type="hidden" name="reel" value="Watch List" />
+
+                    <!-- Provide a button to click to submit the form. -->
+                    <input type="submit" name="submit" value="Remove from Watch List" />
 
                 </form>
             </li>

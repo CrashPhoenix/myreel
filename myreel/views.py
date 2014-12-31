@@ -47,6 +47,10 @@ def index(request):
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
+            if watchlist.movies.filter(rt_id=movie['id']).exists():
+                movie['watchlist'] = True
+            else:
+                movie['watchlist'] = False
 
     return render_to_response('myreel/index.html', data, context)
 
@@ -129,7 +133,7 @@ def add_movie(request):
         movie_obj.critics_consensus = movie['critics_consensus']
         movie_obj.save()
 
-        favorites = profile.reels.get(name='Favorites')
+        favorites = profile.reels.get(name=request.POST['reel'])
         if not favorites.movies.filter(rt_id=rt_id).exists():
             favorites.movies.add(movie_obj)
 
@@ -145,7 +149,7 @@ def remove_movie(request):
         rt_id = request.POST['rt_id']
 
         movie_obj = Movie.objects.get(rt_id=rt_id)
-        favorites = profile.reels.get(name='Favorites')
+        favorites = profile.reels.get(name=request.POST['reel'])
         favorites.movies.remove(movie_obj)
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
@@ -160,10 +164,12 @@ def profile(request):
         return HttpResponseRedirect('/')
 
     favorites = profile.reels.get(name='Favorites')
+    watchlist = profile.reels.get(name='Watch List')
     
     data = {
         'user': user,
         'favorites': favorites.movies.all(),
+        'watchlist': watchlist.movies.all(),
         'form': MovieForm()
     }
     return render_to_response('myreel/profile.html', data, context)

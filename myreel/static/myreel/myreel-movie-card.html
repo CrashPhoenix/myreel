@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
-<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height showButton favorite">
+<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height showButton favorite watchlist">
 <template>
   <style>
     a, a:hover {
@@ -22,17 +22,17 @@
       padding: inherit;
     }
     core-icon-button {
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       position: absolute;
       background-color: white;
       opacity: 0.5;
     }
-    core-icon-button#like {
+    core-icon-button#favorite {
       bottom: 0px;
       right: 0px;
     }
-    core-icon-button#dislike {
+    core-icon-button#watchlist {
       bottom: 0px;
       left: 0px;
     }
@@ -48,7 +48,8 @@
         <!--{{ movieTitle }}-->
         <img src="{{ img }}">
     </a>
-    <core-icon-button id="like" icon="favorite-outline" on-tap="{{favoriteButtonAction}}"></core-icon-button>
+    <core-icon-button id="favorite" icon="favorite-outline" on-tap="{{favoriteButtonAction}}"></core-icon-button>
+    <core-icon-button id="watchlist" icon="turned-in-not" on-tap="{{watchlistButtonAction}}"></core-icon-button>
   </div>
  
 </template>
@@ -58,13 +59,21 @@
     rtID: 0,
     showButton: false,
     favorite: false,
+    watchlist: false,
     ready: function() {
       if (!this.showButton) {
-        this.$.like.style.display = 'none';
-      } else if (this.favorite) {
-        this.$.like.style.color = '#A10A17';
-        this.$.like.style.opacity = '0.8';
-        this.$.like.icon = 'favorite';
+        this.$.favorite.style.display = 'none';
+      } else {
+        if (this.favorite) {
+          this.$.favorite.style.color = '#A10A17';
+          this.$.favorite.style.opacity = '0.8';
+          this.$.favorite.icon = 'favorite';
+        }
+        if (this.watchlist) {
+          this.$.watchlist.style.color = '#EDBB2F';
+          this.$.watchlist.style.opacity = '0.8';
+          this.$.watchlist.icon = 'turned-in';
+        }
       }
     },
     favoriteButtonAction: function() {
@@ -74,22 +83,49 @@
       };
       this.$.ajax.params = {
         'rt_id': this.rtID,
+        'reel': 'Favorites',
         'ajax': true
       };
       if (this.favorite) {
         this.$.ajax.url = "/movie/remove/";
         this.$.ajax.go();
         this.favorite = false;
-        this.$.like.style.color = '#333';
-        this.$.like.style.opacity = '0.5';
-        this.$.like.icon = 'favorite-outline';
+        this.$.favorite.style.color = '#333';
+        this.$.favorite.style.opacity = '0.5';
+        this.$.favorite.icon = 'favorite-outline';
       } else {
         this.$.ajax.url = "/movie/add/";
         this.$.ajax.go();
         this.favorite = true;
-        this.$.like.style.color = '#A10A17';
-        this.$.like.style.opacity = '0.8';
-        this.$.like.icon = 'favorite';
+        this.$.favorite.style.color = '#A10A17';
+        this.$.favorite.style.opacity = '0.8';
+        this.$.favorite.icon = 'favorite';
+      }
+    },
+    watchlistButtonAction: function() {
+      var csrftoken = this.getCookie('csrftoken');//$.cookie('csrftoken');
+      this.$.ajax.headers = {
+        'X-CSRFToken': csrftoken
+      };
+      this.$.ajax.params = {
+        'rt_id': this.rtID,
+        'reel': 'Watch List',
+        'ajax': true
+      };
+      if (this.watchlist) {
+        this.$.ajax.url = "/movie/remove/";
+        this.$.ajax.go();
+        this.watchlist = false;
+        this.$.watchlist.style.color = '#333';
+        this.$.watchlist.style.opacity = '0.5';
+        this.$.watchlist.icon = 'turned-in-not';
+      } else {
+        this.$.ajax.url = "/movie/add/";
+        this.$.ajax.go();
+        this.watchlist = true;
+        this.$.watchlist.style.color = '#EDBB2F';
+        this.$.watchlist.style.opacity = '0.8';
+        this.$.watchlist.icon = 'turned-in';
       }
     },
     getCookie: function (name) {
