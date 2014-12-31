@@ -59,6 +59,14 @@
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
         <span flex></span>
+        <core-field>
+          <core-icon icon="search"></core-icon>
+          {% if query %}
+           <input value="{{query}}" style="border-radius:25px;" flex>
+          {% else %}
+            <input placeholder="Search..." style="border-radius:25px;" flex>
+          {% endif %}
+        </core-field>
         <div class="username">
           {% if user.is_authenticated %}
             {{ user.username }}
