@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
-<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../ajax-form/ajax-form.html">
 <link rel="import" href="../core-input/core-input.html">
 <polymer-element name="myreel-search" attributes="placeholder">
 <template>
@@ -30,17 +30,6 @@
         'X-CSRFToken': csrftoken
       };
       this.$.ajax.submit();
-    },
-    submit: function() {
-      var csrftoken = this.getCookie('csrftoken');
-      this.$.ajax.headers = {
-        'X-CSRFToken': csrftoken
-      };
-      this.$.ajax.params = {
-        'query': committedValue
-      };
-      this.$.ajax.url = "/movie/search/";
-      this.$.ajax.go();
     },
     getCookie: function (name) {
       var cookieValue = null;
