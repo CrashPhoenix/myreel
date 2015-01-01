@@ -65,8 +65,11 @@
           {% csrf_token %}
           <core-field>
             <core-icon icon="search"></core-icon>
-            <input name="query" placeholder="Search..." style="border-radius:25px;color:#000;padding-left:10px;font-size:0.8em;" flex>
+            <input list="power-search" name="query" placeholder="Search..." style="border-radius:25px;color:#000;padding-left:10px;font-size:0.8em;" flex>
           </core-field>
+          <datalist id="power-search">
+            
+          </datalist>
         </form>
 
         <div class="username">
