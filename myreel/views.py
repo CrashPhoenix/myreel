@@ -154,6 +154,50 @@ def remove_movie(request):
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
 
+def search(request):
+    context = RequestContext(request)
+    user = request.user
+
+    data = { 
+        'user': user,
+        'showButton': True,
+        'width': '180px',
+        'height': '267px'
+    }
+
+    if user.is_authenticated():
+        profile = user.profile
+
+        if not profile.reels.filter(name='Favorites').exists():
+            _create_user_profile_reel(request, "Favorites")
+        if not profile.reels.filter(name='Watch List').exists():
+            _create_user_profile_reel(request, "Watch List")
+
+        favorites = profile.reels.get(name='Favorites')
+        watchlist = profile.reels.get(name='Watch List')
+    else:
+        data['showButton'] = False
+        
+    
+    rt = RT()
+    movies = rt.search(request.POST['query'])
+    data['movies'] = movies
+
+    for movie in movies:
+        movie = _fix_poster_links(movie)
+
+        if user.is_authenticated():
+            if favorites.movies.filter(rt_id=movie['id']).exists():
+                movie['favorite'] = True
+            else:
+                movie['favorite'] = False
+            if watchlist.movies.filter(rt_id=movie['id']).exists():
+                movie['watchlist'] = True
+            else:
+                movie['watchlist'] = False
+
+    return render_to_response('myreel/index.html', data, context)
+
 def profile(request):
     user = request.user
     if user.is_authenticated():

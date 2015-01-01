@@ -4,8 +4,9 @@
 <div class="movies">
     <h1> In Theaters </h1>
 
-    {% csrf_token %}
     {% for movie in movies %}
+        <!-- movie.ratings.critics_score is -1 if no movie info....-->
+        {% if movie.ratings.critics_score >= 0 %}
         <myreel-movie-card
             img="{{movie.posters.detailed}}"
             movieTitle="{{movie.title}}"
@@ -22,6 +23,7 @@
                 {% endif %}
             {% endif %}>
         </myreel-movie-card>
+        {% endif %}
     {% endfor %}
 </div>
 
