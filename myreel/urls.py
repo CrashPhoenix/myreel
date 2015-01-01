@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^movie/(?P<rt_id>\d+)/$', views.movie, name='movie'),
     url(r'^movie/add/$', views.add_movie, name='add_movie'),
     url(r'^movie/remove/$', views.remove_movie, name='remove_movie'),
+    url(r'^movie/search/$', views.search, name='search'),
 
     # django-allauth
     url(r'^accounts/', include('allauth.urls')),

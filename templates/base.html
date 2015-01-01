@@ -38,6 +38,7 @@
 </head>
 
 <body fullbleed layout vertical>
+  {% csrf_token %}
 
   <core-drawer-panel>
 
@@ -59,14 +60,15 @@
       <core-toolbar>
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
         <span flex></span>
-        <core-field>
-          <core-icon icon="search"></core-icon>
-          {% if query %}
-           <input value="{{query}}" style="border-radius:25px;" flex>
-          {% else %}
-            <input placeholder="Search..." style="border-radius:25px;" flex>
-          {% endif %}
-        </core-field>
+
+        <form method="post" action="/movie/search/" enctype="multipart/form-data">
+          {% csrf_token %}
+          <core-field>
+            <core-icon icon="search"></core-icon>
+            <input name="query" placeholder="Search..." style="border-radius:25px;color:#000;padding-left:10px" flex>
+          </core-field>
+        </form>
+
         <div class="username">
           {% if user.is_authenticated %}
             {{ user.username }}
