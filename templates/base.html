@@ -26,6 +26,8 @@
   <link rel="import" href="{% static 'core-icon-button/core-icon-button.html' %}">
   <link rel="import" href="{% static 'core-menu/core-menu.html' %}">
   <link rel="import" href="{% static 'core-item/core-item.html' %}">
+  <link rel="import" href="{% static 'core-field/core-field.html' %}">
+  <link rel="import" href="{% static 'myreel/myreel-search.html' %}">
   <link rel="import" href="{% static 'myreel/myreel-movie-card.html' %}">
 
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -61,13 +63,7 @@
         <core-icon-button icon="menu" core-drawer-toggle></core-icon-button>
         <span flex></span>
 
-        <form method="post" action="/movie/search/" enctype="multipart/form-data">
-          {% csrf_token %}
-          <core-field>
-            <core-icon icon="search"></core-icon>
-            <input name="query" placeholder="Search..." style="border-radius:25px;color:#000;padding-left:10px;font-size:0.8em;" flex>
-          </core-field>
-        </form>
+        <myreel-search></myreel-search>
 
         <div class="username">
           {% if user.is_authenticated %}

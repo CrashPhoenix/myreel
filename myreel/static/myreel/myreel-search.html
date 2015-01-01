@@ -1,0 +1,63 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../core-input/core-input.html">
+<polymer-element name="myreel-search" attributes="placeholder">
+<template>
+  <style>
+
+  </style>
+
+  <div class="search">
+
+    <form id="ajax" is="ajax-form" action="/movie/search/" method="post" cookies>
+      <core-icon-button onclick="{{submit_query}}" icon="search"></core-icon-button>
+      <input is="core-input" id="query" value="{{value}}" committedValue="{{committedValue}}" placeholder="{{placeholder}}" style="border-radius:25px;color:#000;padding-left:10px;font-size:0.8em;" flex>
+    </form>
+
+  </div>
+ 
+</template>
+<script>
+
+  Polymer('myreel-search', {
+    value: '',
+    committedValue: '',
+    placeholder: 'Search...',
+    committedValueChanged: function(oldVal, newVal) {
+      var csrftoken = this.getCookie('csrftoken');
+      this.$.ajax.headers = {
+        'X-CSRFToken': csrftoken
+      };
+      this.$.ajax.submit();
+    },
+    submit: function() {
+      var csrftoken = this.getCookie('csrftoken');
+      this.$.ajax.headers = {
+        'X-CSRFToken': csrftoken
+      };
+      this.$.ajax.params = {
+        'query': committedValue
+      };
+      this.$.ajax.url = "/movie/search/";
+      this.$.ajax.go();
+    },
+    getCookie: function (name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+  });
+
+</script>
+</polymer-element>

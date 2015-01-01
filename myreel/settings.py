@@ -113,6 +113,7 @@ BOWER_INSTALLED_APPS = (
     'Polymer/paper-elements#latest',
     'PolymerLabs/polymer-ui-card#latest',
     'normalize.css',
+    'ajax-form',
 )
 
 STATICFILES_FINDERS = (
