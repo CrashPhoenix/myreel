@@ -5,22 +5,25 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
-    <myreel-movie-card
-        img="{{movie.posters.detailed}}"
-        movieTitle="{{movie.title}}"
-        rtID="{{movie.id}}"
-        width="{{width}}"
-        height="{{height}}"
-        {% if showButton %}
-            showButton
-            {% if movie.favorite %}
-                favorite
-            {% endif %}
-            {% if movie.watchlist %}
-                watchlist
-            {% endif %}
-        {% endif %}>
-    </myreel-movie-card>
+        <!-- movie.ratings.critics_score is -1 if no movie info....-->
+        {% if movie.ratings.critics_score >= 0 %}
+        <myreel-movie-card
+            img="{{movie.posters.detailed}}"
+            movieTitle="{{movie.title}}"
+            rtID="{{movie.id}}"
+            width="{{width}}"
+            height="{{height}}"
+            {% if showButton %}
+                showButton
+                {% if movie.favorite %}
+                    favorite
+                {% endif %}
+                {% if movie.watchlist %}
+                    watchlist
+                {% endif %}
+            {% endif %}>
+        </myreel-movie-card>
+        {% endif %}
     {% endfor %}
 </div>
 
