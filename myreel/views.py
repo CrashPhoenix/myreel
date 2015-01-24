@@ -72,70 +72,12 @@ def add_movie(request):
         
         rt = RT()
         rt_id = request.POST['rt_id']
-        movie = rt.info(rt_id)
 
-        # if the Movie exists in our database
-        if Movie.objects.filter(rt_id=rt_id).exists():
-            movie_obj = Movie.objects.get(rt_id=rt_id)
-        else: # otherwise, build the movie and save
-            # first, build the movie
-            movie_obj = Movie(
-                            rt_id=movie['id'],
-                            title=movie['title'],
-                            year=movie['year'],
-                            mpaa_rating=movie['mpaa_rating'],
-                            runtime=movie['runtime'],
-                            release_date=movie['release_dates']['theater'],
-                            synopsis=movie['synopsis'],
-                            studio=movie['studio']
-                        )
-            movie_obj.save()
+        movie_obj = add_movie_to_db(rt_id)
 
-            # next, build the genre object        
-            for genre in movie['genres']:
-                if Genre.objects.filter(genre=genre).exists():
-                    genre_obj = Genre.objects.get(genre=genre)
-                else:
-                    genre_obj = Genre(genre=genre)
-                    genre_obj.save()
-                # add genres to movie's genres
-                movie_obj.genres.add(genre_obj)
-
-            # save movie
-            movie_obj.save()
-
-            # build a ratings model
-            ratings_obj = Ratings(
-                            critics_rating=movie['ratings']['critics_rating'],
-                            critics_score=movie['ratings']['critics_score'],
-                            audience_rating=movie['ratings']['audience_rating'],
-                            audience_score=movie['ratings']['audience_score']
-                        )
-            # set to this movie and save
-            ratings_obj.movie = movie_obj
-            ratings_obj.save()
-
-            # build a posters model
-            posters_obj = Posters(
-                            thumbnail=movie['posters']['thumbnail'],
-                            profile=movie['posters']['original'].replace('tmb', 'pro'),
-                            detailed=movie['posters']['original'].replace('tmb', 'det'),
-                            original=movie['posters']['original'].replace('tmb', 'org')
-                        )
-            # set to this movie and save
-            posters_obj.movie = movie_obj
-            posters_obj.save()
-
-            # one last save...just in case? ;)
-            movie_obj.save()
-
-        # update critic's concensus
-        movie_obj.critics_consensus = movie['critics_consensus']
-        movie_obj.save()
-
-        favorites = profile.reels.get(name=request.POST['reel'])
-        if not favorites.movies.filter(rt_id=rt_id).exists():
-            favorites.movies.add(movie_obj)
+        reel = profile.reels.get(name=request.POST['reel'])
+        if not reel.movies.filter(rt_id=rt_id).exists():
+            reel.movies.add(movie_obj)
 
         if request.POST['ajax']:
             return
@@ -217,6 +159,70 @@ def profile(request):
         'form': MovieForm()
     }
     return render_to_response('myreel/profile.html', data, context)
+
+def add_movie_to_db(rt_id):
+    rt = RT()
+    movie = rt.info(rt_id)
+
+    # if the Movie exists in our database
+    if Movie.objects.filter(rt_id=rt_id).exists():
+        movie_obj = Movie.objects.get(rt_id=rt_id)
+    else: # otherwise, build the movie and save
+        # first, build the movie
+        movie_obj = Movie(
+                        rt_id=movie['id'],
+                        title=movie['title'],
+                        year=movie['year'],
+                        mpaa_rating=movie['mpaa_rating'],
+                        runtime=movie['runtime'],
+                        release_date=movie['release_dates']['theater'],
+                        synopsis=movie['synopsis'],
+                        studio=movie['studio']
+                    )
+        movie_obj.save()
+
+        # next, build the genre object        
+        for genre in movie['genres']:
+            if Genre.objects.filter(genre=genre).exists():
+                genre_obj = Genre.objects.get(genre=genre)
+            else:
+                genre_obj = Genre(genre=genre)
+                genre_obj.save()
+            # add genres to movie's genres
+            movie_obj.genres.add(genre_obj)
+
+        # save movie
+        movie_obj.save()
+
+        # build a ratings model
+        ratings_obj = Ratings(
+                        critics_rating=movie['ratings']['critics_rating'],
+                        critics_score=movie['ratings']['critics_score'],
+                        audience_rating=movie['ratings']['audience_rating'],
+                        audience_score=movie['ratings']['audience_score']
+                    )
+        # set to this movie and save
+        ratings_obj.movie = movie_obj
+        ratings_obj.save()
+
+        # build a posters model
+        posters_obj = Posters(
+                        thumbnail=movie['posters']['thumbnail'],
+                        profile=movie['posters']['original'].replace('tmb', 'pro'),
+                        detailed=movie['posters']['original'].replace('tmb', 'det'),
+                        original=movie['posters']['original'].replace('tmb', 'org')
+                    )
+        # set to this movie and save
+        posters_obj.movie = movie_obj
+        posters_obj.save()
+
+        # one last save...just in case? ;)
+        movie_obj.save()
+
+    # update critic's concensus
+    movie_obj.critics_consensus = movie['critics_consensus']
+    movie_obj.save()
+    return movie_obj
 
 @login_required
 def user_logout(request):
