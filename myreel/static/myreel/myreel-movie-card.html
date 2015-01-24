@@ -84,8 +84,7 @@
       };
       this.$.ajax.params = {
         'rt_id': this.rtID,
-        'reel': 'Favorites',
-        'ajax': true
+        'reel': 'Favorites'
       };
       if (this.favorite) {
         this.$.ajax.url = "/movie/remove/";
@@ -110,8 +109,7 @@
       };
       this.$.ajax.params = {
         'rt_id': this.rtID,
-        'reel': 'Watch List',
-        'ajax': true
+        'reel': 'Watch List'
       };
       if (this.watchlist) {
         this.$.ajax.url = "/movie/remove/";

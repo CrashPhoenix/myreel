@@ -70,7 +70,6 @@ def add_movie(request):
     if user.is_authenticated():
         profile = UserProfile.objects.get(user=user)
         
-        rt = RT()
         rt_id = request.POST['rt_id']
 
         movie_obj = add_movie_to_db(rt_id)
@@ -79,8 +78,6 @@ def add_movie(request):
         if not reel.movies.filter(rt_id=rt_id).exists():
             reel.movies.add(movie_obj)
 
-        if request.POST['ajax']:
-            return
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
 
@@ -91,8 +88,9 @@ def remove_movie(request):
         rt_id = request.POST['rt_id']
 
         movie_obj = Movie.objects.get(rt_id=rt_id)
-        favorites = profile.reels.get(name=request.POST['reel'])
-        favorites.movies.remove(movie_obj)
+        reel = profile.reels.get(name=request.POST['reel'])
+        reel.movies.remove(movie_obj)
+
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
 
