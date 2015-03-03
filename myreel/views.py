@@ -8,7 +8,14 @@ from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
 from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
 from rottentomatoes import RT
+from tmdb3 import set_key
 import os
+
+def set_tmdb3_key(function):
+    def new_function():
+        set_key(os.environ['TMDB_KEY'])
+        function()
+    return new_function
 
 def index(request):
     context = RequestContext(request)
