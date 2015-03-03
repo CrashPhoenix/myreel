@@ -8,16 +8,18 @@ from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
 from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
 from rottentomatoes import RT
-from tmdb3 import set_key
+import tmdb3
 import os
 
-def set_tmdb3_key(function):
+def set_tmdb3_key(function, *kwargs):
     def new_function():
-        set_key(os.environ['TMDB_KEY'])
-        function()
+        tmdb3.set_key(os.environ['TMDB_KEY'])
+        function(*kwargs)
     return new_function
 
+#@set_tmdb3_key
 def index(request):
+    tmdb3.set_key(os.environ['TMDB_KEY'])
     context = RequestContext(request)
     user = request.user
 
@@ -28,6 +30,18 @@ def index(request):
         'height': '267px'
     }
 
+    results = tmdb3.Movie.nowplaying()
+    movies = []
+    for i in range(0,11):
+        if results[i].poster is not None:
+            movie = {
+                'poster': results[i].poster.geturl(),
+                'title': results[i].title
+            }
+            movies.append(movie)
+    data['movies'] = movies
+
+    '''
     if user.is_authenticated():
         profile = user.profile
 
@@ -40,7 +54,6 @@ def index(request):
         watchlist = profile.reels.get(name='Watch List')
     else:
         data['showButton'] = False
-        
     
     rt = RT()
     movies = rt.movies('in_theaters')
@@ -58,6 +71,7 @@ def index(request):
                 movie['watchlist'] = True
             else:
                 movie['watchlist'] = False
+    '''
 
     return render_to_response('myreel/index.html', data, context)
 

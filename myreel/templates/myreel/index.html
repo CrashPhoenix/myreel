@@ -5,8 +5,13 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
+        <div>
+            {{ movie.title }}
+            <br>
+            <img src="{{ movie.poster }}" style="width:{{width}};height:{{height}};">
+        </div>
         <!-- movie.ratings.critics_score is -1 if no movie info....-->
-        {% if movie.ratings.critics_score >= 0 %}
+        <!--{% if movie.ratings.critics_score >= 0 %}
         <myreel-movie-card
             img="{{movie.posters.detailed}}"
             movieTitle="{{movie.title}}"
@@ -23,7 +28,7 @@
                 {% endif %}
             {% endif %}>
         </myreel-movie-card>
-        {% endif %}
+        {% endif %}-->
     {% endfor %}
 </div>
 
