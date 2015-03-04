@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
-from myreel.models import Reel, Movie, Ratings, Posters, Actor, AbridgedCast, Director, AbridgedDirectors, Studio, Links, Genre, UserProfile
+from myreel.models import Person, Character, CrewMember, Genre, Studio, Movie, Poster, Backdrop, Profile, Logo, Reel, UserProfile
 from rottentomatoes import RT
 import tmdb3
 import os
@@ -76,6 +76,7 @@ def index(request):
     return render_to_response('myreel/index.html', data, context)
 
 def movie(request, rt_id):
+    '''
     context = RequestContext(request)
     rt = RT()
     movie = rt.info(rt_id)
@@ -85,8 +86,11 @@ def movie(request, rt_id):
         'form': MovieForm(),
     }
     return render_to_response('myreel/movie.html', data, context)
+    '''
+    pass
 
 def add_movie(request):
+    '''
     user = request.user
     if user.is_authenticated():
         profile = UserProfile.objects.get(user=user)
@@ -162,8 +166,11 @@ def add_movie(request):
             return
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
+    '''
+    pass
 
 def remove_movie(request):
+    '''
     user = request.user
     if user.is_authenticated():
         profile = UserProfile.objects.get(user=user)
@@ -174,8 +181,11 @@ def remove_movie(request):
         favorites.movies.remove(movie_obj)
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
+    '''
+    pass
 
 def search(request):
+    '''
     context = RequestContext(request)
     user = request.user
 
@@ -218,6 +228,8 @@ def search(request):
                 movie['watchlist'] = False
 
     return render_to_response('myreel/index.html', data, context)
+    '''
+    pass
 
 def profile(request):
     user = request.user
@@ -247,12 +259,14 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
 
+'''
 def _fix_poster_links(movie):
     thumbnail = movie['posters']['thumbnail']
     movie['posters']['profile'] = thumbnail.replace('tmb', 'pro')
     movie['posters']['original'] = thumbnail.replace('tmb', 'org')
     movie['posters']['detailed'] = thumbnail.replace('tmb', 'det')
     return movie
+'''
 
 def _create_user_profile_reel(request, name):
     user = request.user
