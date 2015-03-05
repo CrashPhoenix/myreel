@@ -5,7 +5,7 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
-        <div>
+        <div style="display:inline-block;">
             {{ movie.title }}
             <br>
             <img src="{{ movie.poster }}" style="width:{{width}};height:{{height}};">

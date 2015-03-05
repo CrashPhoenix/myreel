@@ -30,15 +30,32 @@ def index(request):
         'height': '267px'
     }
 
+    rt = RT()
+    in_theaters = rt.movies('in_theaters')
+    movies = []
+    for movie in in_theaters:
+        if 'alternate_ids' in movie.keys():
+            if 'imdb' in movie['alternate_ids'].keys():
+                imdb_id = 'tt{0}'.format(movie['alternate_ids']['imdb'])
+                tmdb3_movie = tmdb3.Movie.fromIMDB(imdb_id)
+                if tmdb3_movie.poster is not None:
+                    movie_info = {
+                        'poster': tmdb3_movie.poster.geturl(),
+                        'title': tmdb3_movie.title
+                    }
+                    movies.append(movie_info)
+
+    '''
     results = tmdb3.Movie.nowplaying()
     movies = []
-    for i in range(0,11):
-        if results[i].poster is not None:
+    for i in range(0,31):
+        if i < len(results) and results[i].poster is not None:
             movie = {
-                'poster': results[i].poster.geturl(),
+                'poster': results[i].poster.geturl('w342'),
                 'title': results[i].title
             }
             movies.append(movie)
+    '''
     data['movies'] = movies
 
     '''
