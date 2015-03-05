@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
-<polymer-element name="myreel-movie-card" attributes="img description rtID movieTitle width height showButton favorite watchlist">
+<polymer-element name="myreel-movie-card" attributes="img description tmdbID movieTitle width height showButton favorite watchlist">
 <template>
   <style>
     a, a:hover {
@@ -17,8 +17,10 @@
       display: inline-block;
     }
     img {
-      width: inherit;
-      height: inherit;
+      /*width: inherit;
+      height: inherit;*/
+      max-width: 100%;
+      max-height: 100%;
       padding: inherit;
     }
     core-icon-button {
@@ -44,7 +46,7 @@
   </core-ajax>
 
   <div class="movie" style="text-align:center;">
-    <a href="/movie/{{ rtID }}">
+    <a href="/movie/{{ tmdbID }}">
         <!--{{ movieTitle }}-->
         <img src="{{ img }}">
     </a>
@@ -56,7 +58,7 @@
 <script>
 
   Polymer('myreel-movie-card', {
-    rtID: 0,
+    tmdbID: 0,
     showButton: false,
     favorite: false,
     watchlist: false,
@@ -83,7 +85,7 @@
         'X-CSRFToken': csrftoken
       };
       this.$.ajax.params = {
-        'rt_id': this.rtID,
+        'tmdb_id': this.tmdbID,
         'reel': 'Favorites',
         'ajax': true
       };
@@ -109,7 +111,7 @@
         'X-CSRFToken': csrftoken
       };
       this.$.ajax.params = {
-        'rt_id': this.rtID,
+        'tmdb_id': this.tmdbID,
         'reel': 'Watch List',
         'ajax': true
       };

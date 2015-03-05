@@ -14,7 +14,7 @@
 
         {% csrf_token %}
 
-        <input type="hidden" name="rt_id" value="{{ movie.id }}" />
+        <input type="hidden" name="tmdb_id" value="{{ movie.id }}" />
 
         <!-- Provide a button to click to submit the form. -->
         <input type="submit" name="submit" value="Add to Favorites" />

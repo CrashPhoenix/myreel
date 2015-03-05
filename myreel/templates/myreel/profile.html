@@ -11,7 +11,7 @@
     <ul>
         {% for movie in favorites %}
             <li>
-                <a href="/movie/{{ movie.rt_id }}">{{ movie.title }}</a>
+                <a href="/movie/{{ movie.tmdb_id }}">{{ movie.title }}</a>
                 <br />
 
                 <form id="user_form" method="post" action="/movie/remove/"
@@ -19,7 +19,7 @@
 
                     {% csrf_token %}
 
-                    <input type="hidden" name="rt_id" value="{{ movie.rt_id }}" />
+                    <input type="hidden" name="tmdb_id" value="{{ movie.tmdb_id }}" />
                     <input type="hidden" name="reel" value="Favorites" />
 
                     <!-- Provide a button to click to submit the form. -->
@@ -33,7 +33,7 @@
     <ul>
         {% for movie in watchlist %}
             <li>
-                <a href="/movie/{{ movie.rt_id }}">{{ movie.title }}</a>
+                <a href="/movie/{{ movie.tmdb_id }}">{{ movie.title }}</a>
                 <br />
 
                 <form id="user_form" method="post" action="/movie/remove/"
@@ -41,7 +41,7 @@
 
                     {% csrf_token %}
 
-                    <input type="hidden" name="rt_id" value="{{ movie.rt_id }}" />
+                    <input type="hidden" name="tmdb_id" value="{{ movie.tmdb_id }}" />
                     <input type="hidden" name="reel" value="Watch List" />
 
                     <!-- Provide a button to click to submit the form. -->

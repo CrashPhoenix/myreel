@@ -40,25 +40,13 @@ def index(request):
                 tmdb3_movie = tmdb3.Movie.fromIMDB(imdb_id)
                 if tmdb3_movie.poster is not None:
                     movie_info = {
+                        'tmdb_id': tmdb3_movie.id,
                         'poster': tmdb3_movie.poster.geturl(),
                         'title': tmdb3_movie.title
                     }
                     movies.append(movie_info)
-
-    '''
-    results = tmdb3.Movie.nowplaying()
-    movies = []
-    for i in range(0,31):
-        if i < len(results) and results[i].poster is not None:
-            movie = {
-                'poster': results[i].poster.geturl('w342'),
-                'title': results[i].title
-            }
-            movies.append(movie)
-    '''
     data['movies'] = movies
 
-    '''
     if user.is_authenticated():
         profile = user.profile
 
@@ -72,6 +60,7 @@ def index(request):
     else:
         data['showButton'] = False
     
+    '''
     rt = RT()
     movies = rt.movies('in_theaters')
     data['movies'] = movies
@@ -80,11 +69,11 @@ def index(request):
         movie = _fix_poster_links(movie)
 
         if user.is_authenticated():
-            if favorites.movies.filter(rt_id=movie['id']).exists():
+            if favorites.movies.filter(tmdb_id=movie['id']).exists():
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
-            if watchlist.movies.filter(rt_id=movie['id']).exists():
+            if watchlist.movies.filter(tmdb_id=movie['id']).exists():
                 movie['watchlist'] = True
             else:
                 movie['watchlist'] = False
@@ -92,11 +81,11 @@ def index(request):
 
     return render_to_response('myreel/index.html', data, context)
 
-def movie(request, rt_id):
+def movie(request, tmdb_id):
     '''
     context = RequestContext(request)
     rt = RT()
-    movie = rt.info(rt_id)
+    movie = rt.info(tmdb_id)
     movie = _fix_poster_links(movie)
     data = {
         'movie': movie,
@@ -113,16 +102,16 @@ def add_movie(request):
         profile = UserProfile.objects.get(user=user)
         
         rt = RT()
-        rt_id = request.POST['rt_id']
-        movie = rt.info(rt_id)
+        tmdb_id = request.POST['tmdb_id']
+        movie = rt.info(tmdb_id)
 
         # if the Movie exists in our database
-        if Movie.objects.filter(rt_id=rt_id).exists():
-            movie_obj = Movie.objects.get(rt_id=rt_id)
+        if Movie.objects.filter(tmdb_id=tmdb_id).exists():
+            movie_obj = Movie.objects.get(tmdb_id=tmdb_id)
         else: # otherwise, build the movie and save
             # first, build the movie
             movie_obj = Movie(
-                            rt_id=movie['id'],
+                            tmdb_id=movie['id'],
                             title=movie['title'],
                             year=movie['year'],
                             mpaa_rating=movie['mpaa_rating'],
@@ -176,7 +165,7 @@ def add_movie(request):
         movie_obj.save()
 
         favorites = profile.reels.get(name=request.POST['reel'])
-        if not favorites.movies.filter(rt_id=rt_id).exists():
+        if not favorites.movies.filter(tmdb_id=tmdb_id).exists():
             favorites.movies.add(movie_obj)
 
         if request.POST['ajax']:
@@ -191,9 +180,9 @@ def remove_movie(request):
     user = request.user
     if user.is_authenticated():
         profile = UserProfile.objects.get(user=user)
-        rt_id = request.POST['rt_id']
+        tmdb_id = request.POST['tmdb_id']
 
-        movie_obj = Movie.objects.get(rt_id=rt_id)
+        movie_obj = Movie.objects.get(tmdb_id=tmdb_id)
         favorites = profile.reels.get(name=request.POST['reel'])
         favorites.movies.remove(movie_obj)
         return HttpResponseRedirect('/profile')
@@ -235,11 +224,11 @@ def search(request):
         movie = _fix_poster_links(movie)
 
         if user.is_authenticated():
-            if favorites.movies.filter(rt_id=movie['id']).exists():
+            if favorites.movies.filter(tmdb_id=movie['id']).exists():
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
-            if watchlist.movies.filter(rt_id=movie['id']).exists():
+            if watchlist.movies.filter(tmdb_id=movie['id']).exists():
                 movie['watchlist'] = True
             else:
                 movie['watchlist'] = False

@@ -5,17 +5,10 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
-        <div style="display:inline-block;">
-            {{ movie.title }}
-            <br>
-            <img src="{{ movie.poster }}" style="width:{{width}};height:{{height}};">
-        </div>
-        <!-- movie.ratings.critics_score is -1 if no movie info....-->
-        <!--{% if movie.ratings.critics_score >= 0 %}
         <myreel-movie-card
-            img="{{movie.posters.detailed}}"
+            img="{{movie.poster}}"
             movieTitle="{{movie.title}}"
-            rtID="{{movie.id}}"
+            tmdbID="{{movie.tmdb_id}}"
             width="{{width}}"
             height="{{height}}"
             {% if showButton %}
@@ -28,7 +21,6 @@
                 {% endif %}
             {% endif %}>
         </myreel-movie-card>
-        {% endif %}-->
     {% endfor %}
 </div>
 
