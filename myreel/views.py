@@ -11,15 +11,15 @@ from rottentomatoes import RT
 import tmdb3
 import os
 
-def set_tmdb3_key(function, *kwargs):
-    def new_function():
+def set_tmdb3_key(function):
+    def new_function(request, **kwargs):
         tmdb3.set_key(os.environ['TMDB_KEY'])
-        function(*kwargs)
+        return function(request, **kwargs)
     return new_function
 
-#@set_tmdb3_key
+@set_tmdb3_key
 def index(request):
-    tmdb3.set_key(os.environ['TMDB_KEY'])
+    #tmdb3.set_key(os.environ['TMDB_KEY'])
     context = RequestContext(request)
     user = request.user
 
@@ -81,19 +81,21 @@ def index(request):
 
     return render_to_response('myreel/index.html', data, context)
 
+@set_tmdb3_key
 def movie(request, tmdb_id):
-    '''
     context = RequestContext(request)
+    '''
     rt = RT()
     movie = rt.info(tmdb_id)
     movie = _fix_poster_links(movie)
+    '''
+    movie = tmdb3.Movie(tmdb_id)
     data = {
         'movie': movie,
+        'poster': movie.poster.geturl(),
         'form': MovieForm(),
     }
     return render_to_response('myreel/movie.html', data, context)
-    '''
-    pass
 
 def add_movie(request):
     '''
