@@ -60,24 +60,16 @@ def index(request):
     else:
         data['showButton'] = False
     
-    '''
-    rt = RT()
-    movies = rt.movies('in_theaters')
-    data['movies'] = movies
-
     for movie in movies:
-        movie = _fix_poster_links(movie)
-
         if user.is_authenticated():
-            if favorites.movies.filter(tmdb_id=movie['id']).exists():
+            if favorites.movies.filter(tmdb_id=movie['tmdb_id']).exists():
                 movie['favorite'] = True
             else:
                 movie['favorite'] = False
-            if watchlist.movies.filter(tmdb_id=movie['id']).exists():
+            if watchlist.movies.filter(tmdb_id=movie['tmdb_id']).exists():
                 movie['watchlist'] = True
             else:
                 movie['watchlist'] = False
-    '''
 
     return render_to_response('myreel/index.html', data, context)
 
