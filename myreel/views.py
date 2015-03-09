@@ -343,15 +343,6 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
 
-'''
-def _fix_poster_links(movie):
-    thumbnail = movie['posters']['thumbnail']
-    movie['posters']['profile'] = thumbnail.replace('tmb', 'pro')
-    movie['posters']['original'] = thumbnail.replace('tmb', 'org')
-    movie['posters']['detailed'] = thumbnail.replace('tmb', 'det')
-    return movie
-'''
-
 def _create_user_profile_reel(request, name):
     user = request.user
     profile = user.profile
