@@ -257,7 +257,6 @@ def add_movie(request):
     return HttpResponseRedirect('/')
 
 def remove_movie(request):
-    '''
     user = request.user
     if user.is_authenticated():
         profile = UserProfile.objects.get(user=user)
@@ -268,8 +267,6 @@ def remove_movie(request):
         favorites.movies.remove(movie_obj)
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
-    '''
-    pass
 
 def search(request):
     '''
