@@ -141,7 +141,7 @@ def add_movie(request):
 
             # build poster models
             for poster in movie.posters:
-                posters_obj = Posters()
+                posters_obj = Poster()
                 if 'w92' in poster.sizes():
                     posters_obj.w92 = poster.geturl('w92')
                 if 'w154' in poster.sizes():
@@ -253,8 +253,6 @@ def add_movie(request):
             # one last save...just in case? ;)
             movie_obj.save()
 
-        # update critic's concensus
-        movie_obj.critics_consensus = movie['critics_consensus']
         movie_obj.save()
 
         favorites = profile.reels.get(name=request.POST['reel'])

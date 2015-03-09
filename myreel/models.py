@@ -36,7 +36,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=256)
     overview = models.TextField()
     release_date = models.DateTimeField()
-    imdb_id = models.PositiveIntegerField()
+    imdb_id = models.CharField(max_length=256)
     popularity = models.FloatField()
     user_rating = models.FloatField()
     votes = models.PositiveIntegerField()
