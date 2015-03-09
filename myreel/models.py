@@ -38,7 +38,7 @@ class Movie(models.Model):
     release_date = models.DateTimeField()
     imdb_id = models.PositiveIntegerField()
     popularity = models.FloatField()
-    userrating = models.FloatField()
+    user_rating = models.FloatField()
     votes = models.PositiveIntegerField()
     adult = models.BooleanField()
     genres = models.ManyToManyField(Genre)

@@ -98,14 +98,12 @@ def movie(request, tmdb_id):
     return render_to_response('myreel/movie.html', data, context)
 
 def add_movie(request):
-    '''
     user = request.user
     if user.is_authenticated():
         profile = UserProfile.objects.get(user=user)
         
-        rt = RT()
         tmdb_id = request.POST['tmdb_id']
-        movie = rt.info(tmdb_id)
+        movie = tmdb3.Movie(tmdb_id)
 
         # if the Movie exists in our database
         if Movie.objects.filter(tmdb_id=tmdb_id).exists():
@@ -113,23 +111,27 @@ def add_movie(request):
         else: # otherwise, build the movie and save
             # first, build the movie
             movie_obj = Movie(
-                            tmdb_id=movie['id'],
-                            title=movie['title'],
-                            year=movie['year'],
-                            mpaa_rating=movie['mpaa_rating'],
-                            runtime=movie['runtime'],
-                            release_date=movie['release_dates']['theater'],
-                            synopsis=movie['synopsis'],
-                            studio=movie['studio']
+                            tmdb_id=movie.id,
+                            imdb_id=movie.imdb,
+                            title=movie.title,
+                            overview=movie.overview,
+                            release_date=movie.releasedate,
+                            popularity=movie.popularity,
+                            user_rating=movie.userrating,
+                            votes=movie.votes,
+                            adult=movie.adult
                         )
             movie_obj.save()
 
             # next, build the genre object        
-            for genre in movie['genres']:
-                if Genre.objects.filter(genre=genre).exists():
-                    genre_obj = Genre.objects.get(genre=genre)
+            for genre in movie.genres:
+                if Genre.objects.filter(tmdb_id=genre.id).exists():
+                    genre_obj = Genre.objects.get(tmdb_id=genre.id)
                 else:
-                    genre_obj = Genre(genre=genre)
+                    genre_obj = Genre(
+                                    tmdb_id=genre.id,
+                                    genre=genre.name
+                                )
                     genre_obj.save()
                 # add genres to movie's genres
                 movie_obj.genres.add(genre_obj)
@@ -137,27 +139,116 @@ def add_movie(request):
             # save movie
             movie_obj.save()
 
-            # build a ratings model
-            ratings_obj = Ratings(
-                            critics_rating=movie['ratings']['critics_rating'],
-                            critics_score=movie['ratings']['critics_score'],
-                            audience_rating=movie['ratings']['audience_rating'],
-                            audience_score=movie['ratings']['audience_score']
-                        )
-            # set to this movie and save
-            ratings_obj.movie = movie_obj
-            ratings_obj.save()
+            # build poster models
+            for poster in movie.posters:
+                posters_obj = Posters()
+                if 'w92' in poster.sizes():
+                    posters_obj.w92 = poster.geturl('w92')
+                if 'w154' in poster.sizes():
+                    posters_obj.w154 = poster.geturl('w154')
+                if 'w185' in poster.sizes():
+                    posters_obj.w185 = poster.geturl('w185')
+                if 'w342' in poster.sizes():
+                    posters_obj.w342 = poster.geturl('w342')
+                if 'w500' in poster.sizes():
+                    posters_obj.w500 = poster.geturl('w500')
+                if 'w780' in poster.sizes():
+                    posters_obj.w780 = poster.geturl('w780')
+                if 'original' in poster.sizes():
+                    posters_obj.original = poster.geturl('original')
+                # set to this movie and save
+                posters_obj.movie = movie_obj
+                posters_obj.save()
 
-            # build a posters model
-            posters_obj = Posters(
-                            thumbnail=movie['posters']['thumbnail'],
-                            profile=movie['posters']['original'].replace('tmb', 'pro'),
-                            detailed=movie['posters']['original'].replace('tmb', 'det'),
-                            original=movie['posters']['original'].replace('tmb', 'org')
-                        )
-            # set to this movie and save
-            posters_obj.movie = movie_obj
-            posters_obj.save()
+            # build backdrop models
+            for backdrop in movie.backdrops:
+                backdrop_obj = Backdrop()
+                if 'w300' in backdrop.sizes():
+                    backdrop_obj.w300 = backdrop.geturl('w300')
+                if 'w780' in backdrop.sizes():
+                    backdrop_obj.w780 = backdrop.geturl('w780')
+                if 'w1280' in backdrop.sizes():
+                    backdrop_obj.w1280 = backdrop.geturl('w1280')
+                if 'original' in backdrop.sizes():
+                    backdrop_obj.original = backdrop.geturl('original')
+                # set to this movie and save
+                backdrop_obj.movie = movie_obj
+                backdrop_obj.save()
+
+            # build studio models
+            for studio in movie.studios:
+                if Studio.objects.filter(tmdb_id=studio.id).exists():
+                    studio_obj = Studio.objects.get(tmdb_id=studio.id)
+                else:
+                    studio_obj = Studio(
+                                    tmdb_id=studio.id,
+                                    studio=studio.name,
+                                    description=studio.description
+                                )
+                    if studio.logo:
+                        logo_obj = Logo()
+                        if 'w45' in studio.logo.sizes():
+                            logo_obj.w45 = studio.logo.geturl('w45')
+                        if 'w92' in studio.logo.sizes():
+                            logo_obj.w92 = studio.logo.geturl('w92')
+                        if 'w154' in studio.logo.sizes():
+                            logo_obj.w154 = studio.logo.geturl('w154')
+                        if 'w185' in studio.logo.sizes():
+                            logo_obj.w185 = studio.logo.geturl('w185')
+                        if 'w300' in studio.logo.sizes():
+                            logo_obj.w300 = studio.logo.geturl('w300')
+                        if 'w500' in studio.logo.sizes():
+                            logo_obj.w500 = studio.logo.geturl('w500')
+                        if 'original' in studio.logo.sizes():
+                            logo_obj.original = studio.logo.geturl('original')
+                        # set to this studio and save
+                        logo_obj.studio = studio_obj
+                        logo_obj.save()
+                studio_obj.save()
+                # add studio to movie's studios
+                movie_obj.studios.add(studio_obj)
+
+            # build cast models
+            for actor in movie.cast:
+                if Person.objects.filter(tmdb_id=actor.id).exists():
+                    person_obj = Person.objects.get(tmdb_id=actor.id)
+                else:
+                    person_obj = Person(
+                                tmdb_id=actor.id,
+                                name=actor.name,
+                                biography=actor.biography
+                            )
+                    if actor.dayofbirth:
+                        person_obj.dayofbirth = actor.dayofbirth
+                    person_obj.save()
+                character_obj = Character(
+                                character=actor.character
+                            )
+                character_obj.person = person
+                character_obj.save()
+                # add actor to movie's cast
+                movie_obj.cast.add(character_obj)
+
+            # build crew models
+            for crewMember in movie.crew:
+                if Person.objects.filter(tmdb_id=crewMember.id).exists():
+                    person_obj = Person.objects.get(tmdb_id=crewMember.id)
+                else:
+                    person_obj = Person(
+                                tmdb_id=crewMember.id,
+                                name=crewMember.name,
+                                biography=crewMember.biography
+                            )
+                    if crewMember.dayofbirth:
+                        person_obj.dayofbirth = crewMember.dayofbirth
+                    person_obj.save()
+                crewMember_obj = CrewMember(
+                                job=crewMember.job
+                            )
+                crewMember_obj.person = person
+                crewMember_obj.save()
+                # add actor to movie's crew
+                movie_obj.crew.add(crewMember_obj)
 
             # one last save...just in case? ;)
             movie_obj.save()
@@ -174,8 +265,6 @@ def add_movie(request):
             return
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
-    '''
-    pass
 
 def remove_movie(request):
     '''
