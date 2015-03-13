@@ -41,11 +41,10 @@ def index(request):
                 if tmdb3_movie.poster is not None:
                     movie_info = {
                         'tmdb_id': tmdb3_movie.id,
-                        'poster': tmdb3_movie.poster.geturl(),
+                        'poster': tmdb3_movie.poster.geturl('w185'),
                         'title': tmdb3_movie.title
                     }
                     movies.append(movie_info)
-    data['movies'] = movies
 
     if user.is_authenticated():
         profile = user.profile
@@ -71,16 +70,13 @@ def index(request):
             else:
                 movie['watchlist'] = False
 
+    data['movies'] = movies
+
     return render_to_response('myreel/index.html', data, context)
 
 @set_tmdb3_key
 def movie(request, tmdb_id):
     context = RequestContext(request)
-    '''
-    rt = RT()
-    movie = rt.info(tmdb_id)
-    movie = _fix_poster_links(movie)
-    '''
     movie = tmdb3.Movie(tmdb_id)
     data = {
         'movie': movie,
@@ -268,8 +264,8 @@ def remove_movie(request):
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
 
+@set_tmdb3_key
 def search(request):
-    '''
     context = RequestContext(request)
     user = request.user
 
@@ -293,27 +289,30 @@ def search(request):
     else:
         data['showButton'] = False
         
-    
-    rt = RT()
-    movies = rt.search(request.POST['query'])
+    search_results = tmdb3.searchMovie(request.POST['query'])
+
+    movies = []
+    for movie in search_results:
+        if movie.poster is not None:
+            movie_info = {
+                'tmdb_id': movie.id,
+                'poster': movie.poster.geturl('w185'),
+                'title': movie.title
+            }
+            if user.is_authenticated():
+                if favorites.movies.filter(tmdb_id=movie.tmdb_id).exists():
+                    movie_info['favorite'] = True
+                else:
+                    movie_info['favorite'] = False
+                if watchlist.movies.filter(tmdb_id=movie.tmdb_id).exists():
+                    movie_info['watchlist'] = True
+                else:
+                    movie_info['watchlist'] = False
+            movies.append(movie_info)
+
     data['movies'] = movies
 
-    for movie in movies:
-        movie = _fix_poster_links(movie)
-
-        if user.is_authenticated():
-            if favorites.movies.filter(tmdb_id=movie['id']).exists():
-                movie['favorite'] = True
-            else:
-                movie['favorite'] = False
-            if watchlist.movies.filter(tmdb_id=movie['id']).exists():
-                movie['watchlist'] = True
-            else:
-                movie['watchlist'] = False
-
     return render_to_response('myreel/index.html', data, context)
-    '''
-    pass
 
 def profile(request):
     user = request.user
