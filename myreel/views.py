@@ -92,7 +92,7 @@ def add_movie(request):
         
         tmdb_id = request.POST['tmdb_id']
 
-        movie_obj = add_movie_to_db(rt_id)
+        movie_obj = add_movie_to_db(tmdb_id)
 
         favorites = profile.reels.get(name=request.POST['reel'])
         if not favorites.movies.filter(tmdb_id=tmdb_id).exists():
