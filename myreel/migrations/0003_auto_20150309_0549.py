@@ -7,13 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('myreel', '0005_userprofile'),
+        ('myreel', '0002_auto_20150309_0308'),
     ]
 
     operations = [
-        migrations.RenameField(
+        migrations.AlterField(
             model_name='movie',
-            old_name='release_dates',
-            new_name='release_date',
+            name='imdb_id',
+            field=models.CharField(max_length=256),
+            preserve_default=True,
         ),
     ]
