@@ -94,9 +94,9 @@ def add_movie(request):
 
         movie_obj = add_movie_to_db(tmdb_id)
 
-        favorites = profile.reels.get(name=request.POST['reel'])
-        if not favorites.movies.filter(tmdb_id=tmdb_id).exists():
-            favorites.movies.add(movie_obj)
+        reel = profile.reels.get(name=request.POST['reel'])
+        if not reel.movies.filter(tmdb_id=tmdb_id).exists():
+            reel.movies.add(movie_obj)
 
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
@@ -108,8 +108,8 @@ def remove_movie(request):
         tmdb_id = request.POST['tmdb_id']
 
         movie_obj = Movie.objects.get(tmdb_id=tmdb_id)
-        favorites = profile.reels.get(name=request.POST['reel'])
-        favorites.movies.remove(movie_obj)
+        reel = profile.reels.get(name=request.POST['reel'])
+        reel.movies.remove(movie_obj)
         return HttpResponseRedirect('/profile')
     return HttpResponseRedirect('/')
 
@@ -149,11 +149,11 @@ def search(request):
                 'title': movie.title
             }
             if user.is_authenticated():
-                if favorites.movies.filter(tmdb_id=movie.tmdb_id).exists():
+                if favorites.movies.filter(tmdb_id=movie.id).exists():
                     movie_info['favorite'] = True
                 else:
                     movie_info['favorite'] = False
-                if watchlist.movies.filter(tmdb_id=movie.tmdb_id).exists():
+                if watchlist.movies.filter(tmdb_id=movie.id).exists():
                     movie_info['watchlist'] = True
                 else:
                     movie_info['watchlist'] = False
