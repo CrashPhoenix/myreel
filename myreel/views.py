@@ -10,6 +10,9 @@ from myreel.models import Person, Character, CrewMember, Genre, Studio, Movie, P
 from rottentomatoes import RT
 import tmdb3
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 def set_tmdb3_key(function):
     def new_function(request, **kwargs):
@@ -183,6 +186,7 @@ def profile(request):
     }
     return render_to_response('myreel/profile.html', data, context)
 
+@set_tmdb3_key
 def add_movie_to_db(tmdb_id):
     movie = tmdb3.Movie(tmdb_id)
 
@@ -266,6 +270,7 @@ def add_movie_to_db(tmdb_id):
                                 studio=studio.name,
                                 description=studio.description
                             )
+                studio_obj.save()
                 if studio.logo:
                     logo_obj = Logo()
                     if 'w45' in studio.logo.sizes():
@@ -305,7 +310,7 @@ def add_movie_to_db(tmdb_id):
             character_obj = Character(
                             character=actor.character
                         )
-            character_obj.person = person
+            character_obj.person = person_obj
             character_obj.save()
             # add actor to movie's cast
             movie_obj.cast.add(character_obj)
@@ -326,14 +331,12 @@ def add_movie_to_db(tmdb_id):
             crewMember_obj = CrewMember(
                             job=crewMember.job
                         )
-            crewMember_obj.person = person
+            crewMember_obj.person = person_obj
             crewMember_obj.save()
             # add actor to movie's crew
             movie_obj.crew.add(crewMember_obj)
 
-        # one last save...just in case? ;)
-        movie_obj.save()
-
+    # one last save...just in case? ;)
     movie_obj.save()
     return movie_obj
 

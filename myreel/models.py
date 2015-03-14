@@ -6,7 +6,7 @@ class Person(models.Model):
     tmdb_id = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     biography = models.TextField()
-    dayofbirth = models.DateTimeField()
+    dayofbirth = models.DateTimeField(null=True)
 
 class Character(models.Model):
     person = models.ForeignKey(Person)
