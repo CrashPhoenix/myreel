@@ -6,7 +6,7 @@
 <div>
 
     <div style="height:480px;">
-        <img style="max-height:100%;max-width:100%;" src="{{ movie.posters.original }}" />
+        <img style="max-height:100%;max-width:100%;" src="{{ poster }}" />
     </div>
 
     <form id="user_form" method="post" action="/movie/add/"
@@ -14,7 +14,7 @@
 
         {% csrf_token %}
 
-        <input type="hidden" name="rt_id" value="{{ movie.id }}" />
+        <input type="hidden" name="tmdb_id" value="{{ movie.id }}" />
         <input type="hidden" name="reel" value="Favorites" />
 
         <!-- Provide a button to click to submit the form. -->

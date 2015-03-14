@@ -2,47 +2,44 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AbridgedCast',
+            name='Backdrop',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('w300', models.CharField(max_length=256)),
+                ('w780', models.CharField(max_length=256)),
+                ('w1280', models.CharField(max_length=256)),
+                ('original', models.CharField(max_length=256)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='AbridgedDirectors',
+            name='Character',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('character', models.CharField(max_length=256)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Actor',
+            name='CrewMember',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=256)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='Director',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=256)),
+                ('job', models.CharField(max_length=256)),
             ],
             options={
             },
@@ -52,6 +49,7 @@ class Migration(migrations.Migration):
             name='Genre',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tmdb_id', models.PositiveIntegerField()),
                 ('genre', models.CharField(max_length=256)),
             ],
             options={
@@ -59,14 +57,16 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Links',
+            name='Logo',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('self', models.CharField(max_length=256)),
-                ('cast', models.CharField(max_length=256)),
-                ('clips', models.CharField(max_length=256)),
-                ('reviews', models.CharField(max_length=256)),
-                ('similar', models.CharField(max_length=256)),
+                ('w45', models.CharField(max_length=256)),
+                ('w92', models.CharField(max_length=256)),
+                ('w154', models.CharField(max_length=256)),
+                ('w185', models.CharField(max_length=256)),
+                ('w300', models.CharField(max_length=256)),
+                ('w500', models.CharField(max_length=256)),
+                ('original', models.CharField(max_length=256)),
             ],
             options={
             },
@@ -76,15 +76,17 @@ class Migration(migrations.Migration):
             name='Movie',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('rt_id', models.PositiveIntegerField()),
+                ('tmdb_id', models.PositiveIntegerField()),
                 ('title', models.CharField(max_length=256)),
-                ('year', models.PositiveIntegerField()),
-                ('mpaa_rating', models.CharField(max_length=256)),
-                ('runtime', models.PositiveIntegerField()),
-                ('critics_consensus', models.CharField(max_length=256)),
-                ('release_dates', models.CharField(max_length=256)),
-                ('synopsis', models.TextField()),
-                ('studio', models.CharField(max_length=256)),
+                ('overview', models.TextField()),
+                ('release_date', models.DateTimeField()),
+                ('imdb_id', models.PositiveIntegerField()),
+                ('popularity', models.FloatField()),
+                ('userrating', models.FloatField()),
+                ('votes', models.PositiveIntegerField()),
+                ('adult', models.BooleanField()),
+                ('cast', models.ManyToManyField(to='myreel.Character')),
+                ('crew', models.ManyToManyField(to='myreel.CrewMember')),
                 ('genres', models.ManyToManyField(to='myreel.Genre')),
             ],
             options={
@@ -92,10 +94,28 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Posters',
+            name='Person',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('thumbnail', models.CharField(max_length=256)),
+                ('tmdb_id', models.PositiveIntegerField()),
+                ('name', models.CharField(max_length=256)),
+                ('biography', models.TextField()),
+                ('dayofbirth', models.DateTimeField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Poster',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('w92', models.CharField(max_length=256)),
+                ('w154', models.CharField(max_length=256)),
+                ('w185', models.CharField(max_length=256)),
+                ('w342', models.CharField(max_length=256)),
+                ('w500', models.CharField(max_length=256)),
+                ('w780', models.CharField(max_length=256)),
                 ('original', models.CharField(max_length=256)),
                 ('movie', models.ForeignKey(to='myreel.Movie')),
             ],
@@ -104,14 +124,26 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Ratings',
+            name='Profile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('critics_rating', models.CharField(max_length=256)),
-                ('critics_score', models.SmallIntegerField()),
-                ('audience_rating', models.CharField(max_length=256)),
-                ('audience_score', models.SmallIntegerField()),
-                ('movie', models.ForeignKey(to='myreel.Movie')),
+                ('w45', models.CharField(max_length=256)),
+                ('w185', models.CharField(max_length=256)),
+                ('h632', models.CharField(max_length=256)),
+                ('original', models.CharField(max_length=256)),
+                ('person', models.ForeignKey(to='myreel.Person')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Reel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=256)),
+                ('movies', models.ManyToManyField(to='myreel.Movie')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },
@@ -121,38 +153,51 @@ class Migration(migrations.Migration):
             name='Studio',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tmdb_id', models.PositiveIntegerField()),
                 ('studio', models.CharField(max_length=256)),
+                ('description', models.TextField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('reels', models.ManyToManyField(to='myreel.Reel')),
+                ('user', models.OneToOneField(related_name='profile', to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name='links',
-            name='movie',
-            field=models.ForeignKey(to='myreel.Movie'),
+            model_name='movie',
+            name='studios',
+            field=models.ManyToManyField(to='myreel.Studio'),
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='abridgeddirectors',
-            name='directors',
-            field=models.ManyToManyField(to='myreel.Director'),
+            model_name='logo',
+            name='studio',
+            field=models.ForeignKey(to='myreel.Studio'),
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='abridgeddirectors',
-            name='movie',
-            field=models.ForeignKey(to='myreel.Movie'),
+            model_name='crewmember',
+            name='person',
+            field=models.ForeignKey(to='myreel.Person'),
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='abridgedcast',
-            name='actors',
-            field=models.ManyToManyField(to='myreel.Actor'),
+            model_name='character',
+            name='person',
+            field=models.ForeignKey(to='myreel.Person'),
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='abridgedcast',
+            model_name='backdrop',
             name='movie',
             field=models.ForeignKey(to='myreel.Movie'),
             preserve_default=True,
