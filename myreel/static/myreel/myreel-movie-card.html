@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
-<polymer-element name="myreel-movie-card" attributes="img description tmdbID movieTitle width height showButton favorite watchlist">
+<polymer-element name="myreel-movie-card" attributes="img description tmdbID movieTitle width height showButton favorite watchlist recommended">
 <template>
   <style>
     a, a:hover {
@@ -48,6 +48,7 @@
   <div class="movie" style="text-align:center;">
     <a href="/movie/{{ tmdbID }}">
         <!--{{ movieTitle }}-->
+        {{ recommended }}
         <img src="{{ img }}">
     </a>
     <core-icon-button id="favorite" icon="favorite-outline" on-tap="{{favoriteButtonAction}}"></core-icon-button>
@@ -62,6 +63,7 @@
     showButton: false,
     favorite: false,
     watchlist: false,
+    recommended: false,
     ready: function() {
       if (!this.showButton) {
         this.$.favorite.style.display = 'none';

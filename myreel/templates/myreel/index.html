@@ -19,7 +19,8 @@
                 {% if movie.watchlist %}
                     watchlist
                 {% endif %}
-            {% endif %}>
+            {% endif %}
+            recommended="{{movie.recommended}}">
         </myreel-movie-card>
     {% endfor %}
 </div>

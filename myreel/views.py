@@ -8,6 +8,7 @@ from myreel.forms import UserForm, UserProfileForm, MovieForm
 from django.template import RequestContext
 from myreel.models import Person, Character, CrewMember, Genre, Studio, Movie, Poster, Backdrop, Profile, Logo, Reel, UserProfile
 from rottentomatoes import RT
+from sklearn.feature_extraction import DictVectorizer
 import tmdb3
 import os
 import logging
@@ -45,7 +46,8 @@ def index(request):
                     movie_info = {
                         'tmdb_id': tmdb3_movie.id,
                         'poster': tmdb3_movie.poster.geturl('w185'),
-                        'title': tmdb3_movie.title
+                        'title': tmdb3_movie.title,
+                        'recommended': _is_recommended(request, tmdb3_movie.id)
                     }
                     movies.append(movie_info)
 
@@ -357,3 +359,26 @@ def _create_user_profile_reel(request, name):
     )
     profile.save()
     return
+
+#@set_tmdb3_key
+def _is_recommended(request, tmdb_id):
+    tmdb3.set_key(os.environ['TMDB_KEY'])
+    user = request.user
+    if user.is_authenticated():
+        context = RequestContext(request)
+        profile = user.profile
+    else:
+        return True
+
+    movie = tmdb3.Movie(tmdb_id)
+
+    favorites = profile.reels.get(name='Favorites')
+
+    favorite_movies = favorites.movies.all()
+    X = []
+    for movie in favorite_movies:
+        x = {}
+#        for genres in movie.genres.all():
+
+    return True
+
