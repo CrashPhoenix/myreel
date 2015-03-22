@@ -14,6 +14,7 @@ class RecommenderTests(TestCase):
 
     def setUp(self):
         add_movie_to_db(11)
+        add_movie_to_db(190859)
 
     def test_test_svm(self):
         """
@@ -24,6 +25,8 @@ class RecommenderTests(TestCase):
         self.assertEqual(movie.title, 'Star Wars: Episode IV - A New Hope')
 
         movies = []
+        movies.append(movie)
+        movie = Movie.objects.get(tmdb_id=190859)
         movies.append(movie)
 
         X = []
@@ -37,8 +40,9 @@ class RecommenderTests(TestCase):
             for person in movie.crew.all():
                 x[person.person.name] = 1
 
-        X.append(x)
-        y.append(1)
+            X.append(x)
+            y.append(1)
+        y[1] = 0
 
         vec = DictVectorizer()
         X = vec.fit_transform(X).toarray()
