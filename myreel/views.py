@@ -9,6 +9,7 @@ from django.template import RequestContext
 from myreel.models import Person, Character, CrewMember, Genre, Studio, Movie, Poster, Backdrop, Profile, Logo, Reel, UserProfile
 from rottentomatoes import RT
 from sklearn.feature_extraction import DictVectorizer
+from sklearn import svm
 import tmdb3
 import os
 import logging
@@ -360,25 +361,44 @@ def _create_user_profile_reel(request, name):
     profile.save()
     return
 
-#@set_tmdb3_key
 def _is_recommended(request, tmdb_id):
-    tmdb3.set_key(os.environ['TMDB_KEY'])
+    logger.debug("this is a debug message!")
     user = request.user
     if user.is_authenticated():
-        context = RequestContext(request)
         profile = user.profile
     else:
         return True
 
-    movie = tmdb3.Movie(tmdb_id)
-
+    # Fit favorite movies
     favorites = profile.reels.get(name='Favorites')
 
     favorite_movies = favorites.movies.all()
     X = []
+    y = []
     for movie in favorite_movies:
         x = {}
-#        for genres in movie.genres.all():
+        for genre in movie.genres.all():
+            x[genre.genre] = 1
+        for person in movie.cast.all():
+            x[person.person.name] = 1
+        for person in movie.crew.all():
+            x[person.person.name] = 1
+
+        X.append(x)
+        y.append(1)
+
+    vec = DictVectorizer()
+    X = vec.fit_transform(X).toarray()
+
+    clf = svm.SVC()
+
+    print len(X)
+    print len(y)
+    clf.fit(X, y)
+
+    # Get movie vector
+    #movie = add_movie_to_db(tmdb_id)
+
 
     return True
 
