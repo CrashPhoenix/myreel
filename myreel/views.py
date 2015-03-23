@@ -369,7 +369,7 @@ def _is_recommended(request, tmdb_id):
         if user.is_authenticated():
             profile = user.profile
         else:
-            return False
+            return True
 
         # Fit favorite movies
         favorites = profile.reels.get(name='Favorites')
@@ -395,7 +395,6 @@ def _is_recommended(request, tmdb_id):
                 new_x[genre.genre] = 1
             else:
                 new_x[genre.genre] += 1
-        '''
         for person in new_movie.cast.all():
             if person.person.name not in new_x:
                 new_x[person.person.name] = 1
@@ -406,7 +405,6 @@ def _is_recommended(request, tmdb_id):
                 new_x[person.person.name] = 1
             else:
                 new_x[person.person.name] += 1
-        '''
         X.append(new_x)
 
         vec = DictVectorizer()
