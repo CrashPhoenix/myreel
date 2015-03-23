@@ -9,6 +9,7 @@ from django.template import RequestContext
 from myreel.models import Person, Character, CrewMember, Genre, Studio, Movie, Poster, Backdrop, Profile, Logo, Reel, UserProfile
 from rottentomatoes import RT
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from sklearn import svm
 import tmdb3
 import os
@@ -362,43 +363,64 @@ def _create_user_profile_reel(request, name):
     return
 
 def _is_recommended(request, tmdb_id):
-    logger.debug("this is a debug message!")
-    user = request.user
-    if user.is_authenticated():
-        profile = user.profile
-    else:
-        return True
+    try:
+        logger.debug("this is a debug message!")
+        user = request.user
+        if user.is_authenticated():
+            profile = user.profile
+        else:
+            return False
 
-    # Fit favorite movies
-    favorites = profile.reels.get(name='Favorites')
+        # Fit favorite movies
+        favorites = profile.reels.get(name='Favorites')
 
-    favorite_movies = favorites.movies.all()
-    X = []
-    y = []
-    for movie in favorite_movies:
+        favorite_movies = favorites.movies.all()
+        X = []
+        y = []
         x = {}
-        for genre in movie.genres.all():
-            x[genre.genre] = 1
-        for person in movie.cast.all():
-            x[person.person.name] = 1
-        for person in movie.crew.all():
-            x[person.person.name] = 1
+        for movie in favorite_movies:
+            for genre in movie.genres.all():
+                x[genre.genre] = 1
+            for person in movie.cast.all():
+                x[person.person.name] = 1
+            for person in movie.crew.all():
+                x[person.person.name] = 1
 
         X.append(x)
-        y.append(1)
 
-    vec = DictVectorizer()
-    X = vec.fit_transform(X).toarray()
+        new_movie = add_movie_to_db(tmdb_id)
+        new_x = {}
+        for genre in new_movie.genres.all():
+            if genre.genre not in new_x:
+                new_x[genre.genre] = 1
+            else:
+                new_x[genre.genre] += 1
+        '''
+        for person in new_movie.cast.all():
+            if person.person.name not in new_x:
+                new_x[person.person.name] = 1
+            else:
+                new_x[person.person.name] += 1
+        for person in new_movie.crew.all():
+            if person.person.name not in new_x:
+                new_x[person.person.name] = 1
+            else:
+                new_x[person.person.name] += 1
+        '''
+        X.append(new_x)
 
-    clf = svm.SVC()
+        vec = DictVectorizer()
+        X = vec.fit_transform(X).toarray()
 
-    print len(X)
-    print len(y)
-    clf.fit(X, y)
+        score = cosine_similarity(X[0], X[1])
 
-    # Get movie vector
-    #movie = add_movie_to_db(tmdb_id)
+        if score.item(0,0) > 0.06:
+            return True
+        return False
+        '''
+        return score.item
+        '''
 
-
-    return True
+    except:
+        return False
 

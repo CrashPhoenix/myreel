@@ -5,6 +5,7 @@
     <h1> In Theaters </h1>
 
     {% for movie in movies %}
+        {{movie.recommended}}
         <myreel-movie-card
             img="{{movie.poster}}"
             movieTitle="{{movie.title}}"
