@@ -387,11 +387,20 @@ def _is_recommended(request, tmdb_id):
         x = {}
         for movie in favorite_movies:
             for genre in movie.genres.all():
-                x[genre.genre] = 1
+                if genre.genre not in x:
+                    x[genre.genre] = 1
+                else:
+                    x[genre.genre] += 1
             for person in movie.cast.all():
-                x[person.person.name] = 1
+                if person.person.name not in x:
+                    x[person.person.name] = 1
+                else:
+                    x[person.person.name] += 1
             for person in movie.crew.all():
-                x[person.person.name] = 1
+                if person.person.name not in x:
+                    x[person.person.name] = 1
+                else:
+                    x[person.person.name] += 1
 
         '''
         for movie in watchlist_movies:
@@ -408,20 +417,11 @@ def _is_recommended(request, tmdb_id):
         new_movie = add_movie_to_db(tmdb_id)
         new_x = {}
         for genre in new_movie.genres.all():
-            if genre.genre not in new_x:
-                new_x[genre.genre] = 1
-            else:
-                new_x[genre.genre] += 1
+            new_x[genre.genre] = 1
         for person in new_movie.cast.all():
-            if person.person.name not in new_x:
-                new_x[person.person.name] = 1
-            else:
-                new_x[person.person.name] += 1
+            new_x[person.person.name] = 1
         for person in new_movie.crew.all():
-            if person.person.name not in new_x:
-                new_x[person.person.name] = 1
-            else:
-                new_x[person.person.name] += 1
+            new_x[person.person.name] = 1
         X.append(new_x)
 
         vec = DictVectorizer()
